@@ -12,9 +12,9 @@ angular.module('view-form').directive('onEnterKey', ['$rootScope', function($roo
 				var onEnterKeyDisabled = false;
 				if($attrs.onEnterKeyDisabled !== null) onEnterKeyDisabled = $attrs.onEnterKeyDisabled;
 
-				if(keyCode === 13 && !event.shiftKey && !onEnterKeyDisabled) {
+				if(keyCode === 13 && !event.shiftKey && !onEnterKeyDisabled) {									
 					event.preventDefault();
-					$rootScope.$apply(function() {
+					$rootScope.$apply(function() {												
 						$rootScope.$eval($attrs.onEnterKey);
 					});
 				}

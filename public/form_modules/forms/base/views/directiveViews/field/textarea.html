@@ -8,7 +8,7 @@
 			{{field.title}}
 			<span class="required-error" ng-show="!field.required">{{ 'OPTIONAL' | translate }}</span>
 		</h3>
-		<small>{{ 'NEWLINE' | translate }}</small>
+		<!--<small>{{ 'NEWLINE' | translate }}</small>-->
 		<p>
 			<small>{{field.description}}</small>
 		</p>
@@ -33,7 +33,10 @@
 
 <div>
 	<div class="btn btn-lg btn-default"
-		 style="padding: 4px; margin-top:8px; background: rgba(255,255,255,0.5)">
+		 style="padding: 4px; margin-top:8px; background: rgba(255,255,255,0.5)"
+		 ng-style="{'background-color':design.colors.buttonColor}"
+		 ng-disabled="!field.fieldValue || field.$invalid"
+		 >
 		<button ng-disabled="!field.fieldValue || forms.myForm.{{field.fieldType}}{{$index}}.$invalid"
 				ng-style="{'background-color':design.colors.buttonColor, 'color':design.colors.buttonTextColor}"
 				ng-click="$root.nextField()"
@@ -42,7 +45,9 @@
 			{{ 'OK' | translate }} <i class="fa fa-check"></i>
 		</button>
 		<div class="col-sm-3 col-xs-6" style="margin-top:0.2em">
-			<small style="color:#ddd; font-size:70%">
+			<small style="color:#ddd; font-size:70%"
+			ng-style="{'color':design.colors.buttonTextColor}"
+			>
 				{{ 'ENTER' | translate }}
 			</small>
 		</div>

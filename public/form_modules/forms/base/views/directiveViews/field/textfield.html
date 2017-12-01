@@ -47,7 +47,9 @@
 </div>
 <div>
 	<div class="btn btn-lg btn-default" ng-disabled="!field.fieldValue || field.$invalid"
-	 	style="padding: 4px; margin-top:8px; background: rgba(255,255,255,0.5)">
+		 style="padding: 4px; margin-top:8px;"
+		 ng-style="{'background-color':design.colors.buttonColor}"
+		 >
 			<button ng-disabled="!field.fieldValue || field.$invalid"
 				ng-style="{'background-color':design.colors.buttonColor, 'color':design.colors.buttonTextColor}"
                 ng-click="nextField()"
@@ -56,7 +58,9 @@
 				{{ 'OK' | translate }} <i class="fa fa-check"></i>
 			</button>
 			<div class="col-xs-6 col-sm-3" style="margin-top:0.2em">
-				<small style="color:#ddd; font-size:70%">
+				<small style="color:#ddd; font-size:70%"
+				ng-style="{'color':design.colors.buttonTextColor}"
+				>
 				{{ 'ENTER' | translate }}
 				</small>
 			</div>
