@@ -15,7 +15,7 @@
 }
 
 form .btn {
-    border-color: grey;
+    border-color: white !important;
 }
 
 .public-form.preview {
@@ -120,11 +120,11 @@ div.form-fields {
     zoom: 1;
     width: 16px;
     padding: 0;
-    height: 17px;
+    height: 20px;
     font-size: 12px;
     line-height: 19px;
     border: 1px solid #000;
-    border: 1px solid rgba(0,0,0,.2);
+    border: 1px solid #ffffff;
     margin-right: 7px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -419,4 +419,7 @@ h3.forms-list-title {
 
     .form-item.create-new input {
         max-width: 100%
+    }
+    .gender{
+        text-align: left;
     }
