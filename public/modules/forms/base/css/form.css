@@ -166,6 +166,8 @@ form .row.field {
         font-size:1.2em;
         padding-bottom: 0.5em;
         width: inherit;
+        text-align: justify;
+        color: white !important;
     }
     form .row.field > .field-input {
         font-size: 1.4em;
@@ -190,6 +192,7 @@ form .row.field {
         }
         form.submission-form .field.row.radio .btn {
             margin-right:1.2em;
+            margin-top: 10px;
         }
 
         form.submission-form .select > .field-input .btn {
@@ -420,6 +423,13 @@ h3.forms-list-title {
     .form-item.create-new input {
         max-width: 100%
     }
-    .gender{
+    .option-text{
         text-align: left;
+    }
+    input::placeholder {
+        color: white;
+    }
+    input{
+        border-color: white !important;
+        width: 100% !important;
     }
