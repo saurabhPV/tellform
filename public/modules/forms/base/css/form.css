@@ -149,6 +149,10 @@ form .accordion-edit {
 /*Styles for ui-datepicker*/
 .ui-datepicker.ui-widget {
     z-index: 99!important;
+    position: absolute;
+    top: 3793.81px;
+    left: 10.812px !important;
+    display: block;
 }
 
 form .row.field .field-number {
