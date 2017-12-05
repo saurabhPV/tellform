@@ -397,7 +397,11 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					}
 
 					setTimeout(function () {
-						$scope.submitPromise = $http.post('/forms/' + $scope.myform._id, form)
+						if(formAction){
+							window.location=formAction;
+							window.scrollTo(0, 0);
+						}
+						/*$scope.submitPromise = $http.post('/forms/' + $scope.myform._id, form)
 							.success(function (data, status) {
 								$scope.myform.submitted = true;
 								$scope.loading = false;
@@ -421,7 +425,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										 $window.animate(window.scrollTo(0, 0));
 										},100);
 								}							
-							});
+							});*/
 					}, 500);
                 };
 
