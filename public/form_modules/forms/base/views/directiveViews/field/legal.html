@@ -15,7 +15,7 @@
 			<span class="required-error" ng-show="!field.required">{{ 'OPTIONAL' | translate }}</span>
 		</h3>
     	<br>
-    	<p class="col-xs-12" ng-bind-html=trustAsHtml(field.description) ></p>
+    	<p class="col-xs-12" ng-bind-html="field.description" ></p>
     </div>
     <div class="col-xs-12 field-input container">
 		<div class="row-fluid">

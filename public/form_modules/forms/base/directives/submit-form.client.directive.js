@@ -352,12 +352,15 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						$scope.goToInvalid();
 						return;
 					}
-
+					var formAction="";
 					var _timeElapsed = TimeCounter.stopClock();
 					$scope.loading = true;
 
 					var form = _.cloneDeep($scope.myform);
-
+					console.log("form.endPage.action "+form.endPage.action);
+					if(form.endPage.action){
+						formAction = form.endPage.action;
+					}
 					var deviceData = getDeviceData();
 					form.device = deviceData;
 
@@ -399,11 +402,25 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 								$scope.myform.submitted = true;
 								$scope.loading = false;
 								SendVisitorData.send(form, getActiveField(), _timeElapsed);
+								if(formAction){
+									window.location.href="http://"+window.location.hostname+"/"+formAction;
+								}
 							})
 							.error(function (error) {
 								$scope.loading = false;
 								console.error(error);
 								$scope.error = error.message;
+								if(formAction){
+									window.location="http://"+window.location.hostname+":8887/"+formAction;
+									setTimeout (function(){
+										 console.log("time to reload");
+										 //$scope.reloadForm();									 
+										 //$location.path(formAction);
+										 //$scope.fadeIn();
+										 //window.location.reload();
+										 $window.animate(window.scrollTo(0, 0));
+										},100);
+								}							
 							});
 					}, 500);
                 };

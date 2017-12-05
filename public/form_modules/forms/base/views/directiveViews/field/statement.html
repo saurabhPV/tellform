@@ -3,7 +3,7 @@
 	 on-tab-and-shift-key="prevField()">
     <div class="row field-title field-title">
     	<div class="col-xs-1"><i class="fa fa-quote-left fa-1"></i></div>
-    	<h2 class="text-left col-xs-9">{{field.title}}</h2>
+    	<h2 class="text-left col-xs-9" ng-bind-html="field.title" ></h2>
 		<p class="col-xs-12">
 			<small>{{field.description}}</small>
 		</p>
