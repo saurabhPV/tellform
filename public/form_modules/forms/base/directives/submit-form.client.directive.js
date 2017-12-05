@@ -207,16 +207,47 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						}
                 	}
                 });
-
+				var getAbsoluteBoundingRect = function(el) {
+					var doc  = document,
+						win  = window,
+						body = doc.body,
+				
+						// pageXOffset and pageYOffset work everywhere except IE <9.
+						offsetX = win.pageXOffset !== undefined ? win.pageXOffset :
+							(doc.documentElement || body.parentNode || body).scrollLeft,
+						offsetY = win.pageYOffset !== undefined ? win.pageYOffset :
+							(doc.documentElement || body.parentNode || body).scrollTop,
+				
+						rect = el.getBoundingClientRect();
+				
+					if (el !== body) {
+						var parent = el.parentNode;
+				
+						// The element's rect will be affected by the scroll positions of
+						// *all* of its scrollable parents, not just the window, so we have
+						// to walk up the tree and collect every scroll offset. Good times.
+						while (parent !== body) {
+							offsetX += parent.scrollLeft;
+							offsetY += parent.scrollTop;
+							parent   = parent.parentNode;
+						}
+					}
+				
+					return {
+						bottom: rect.bottom + offsetY,
+						height: rect.height,
+						left  : rect.left + offsetX,
+						right : rect.right + offsetX,
+						top   : rect.top + offsetY,
+						width : rect.width
+					};
+				}
                 //Fire event when window is scrolled
 				$window.onscroll = function(){
                     if(!NOSCROLL){
-
+						
 						var scrollTop = $(window).scrollTop();
-						var elemBox = document.getElementsByClassName('activeField')[0].getBoundingClientRect();
-						var fieldTop = elemBox.top;
-						var fieldBottom = elemBox.bottom;
-
+						var abselemBox=getAbsoluteBoundingRect(document.getElementsByClassName('activeField')[0]);						
 						var field_id, field_index;
 						var elemHeight = $('.activeField').height();
 
@@ -229,7 +260,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						var scrollPosition = maxScrollTop - submitSectionHeight - fieldDirectiveHeight*1.2;
 
 						var fractionToJump = 0.9;
-
+												
                     	//Focus on field above submit form button
                         if($scope.selected.index === $scope.myform.visible_form_fields.length){
                             if(scrollTop < scrollPosition){
@@ -245,12 +276,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                         }
                         
                         //If we scrolled bellow the current field, move to next field
-                        else if(fieldBottom < elemHeight * fractionToJump && $scope.selected.index < $scope.myform.visible_form_fields.length-1 ){
+                        else if(scrollTop > fractionToJump*(abselemBox.top + abselemBox.height)  && $scope.selected.index < $scope.myform.visible_form_fields.length-1 ){
                             field_index = $scope.selected.index+1;
                             $scope.setActiveField(null, field_index, false);
                         } 
                         //If we scrolled above the current field, move to prev field
-                        else if ( $scope.selected.index !== 0 && fieldTop > elemHeight * fractionToJump) {
+                        else if ( $scope.selected.index !== 0 && scrollTop < fractionToJump*abselemBox.top) {
                             field_index = $scope.selected.index-1;
                             $scope.setActiveField(null, field_index, false);
                         }
