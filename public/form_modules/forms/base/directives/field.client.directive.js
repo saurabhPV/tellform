@@ -67,7 +67,7 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 
 				//Set format only if field is a date
 				if(scope.field.fieldType === 'date'){
-					if (scope.field.showCurrentDate){
+					if (scope.field.chooseDefaultDate){
 						scope.field.fieldValue = new Date();
 					}
 					scope.dateOptions = {
