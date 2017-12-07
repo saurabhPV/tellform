@@ -152,7 +152,7 @@ form .accordion-edit {
     position: absolute;
     top: 3793.81px;
     left: 10.812px !important;
-    display: block;
+    display: none;
 }
 
 form .row.field .field-number {
@@ -170,8 +170,8 @@ form .row.field {
         font-size:1.2em;
         padding-bottom: 0.5em;
         width: inherit;
-        text-align: justify;
         color: white !important;
+            padding: 0px 11px 0px 20px;
     }
     form .row.field > .field-input {
         font-size: 1.4em;
@@ -358,7 +358,7 @@ section.public-form field-directive .btn[disabled]{
 
 .field-directive {
     opacity: 0.2;
-    padding: 2.5% 10% 2.5% 10%;
+    padding: 0px 2px 0px 32px;
     width:100%;
 }
 
@@ -436,4 +436,13 @@ h3.forms-list-title {
     input{
         border-color: white !important;
         width: 100% !important;
+    }
+    p{
+        text-align: justify;
+    }
+    h3,h2{
+        font-size: 23px;
+    }
+    small{
+        font-size: 20px;
     }
