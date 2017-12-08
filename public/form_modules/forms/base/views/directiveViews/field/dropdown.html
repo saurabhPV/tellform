@@ -14,7 +14,7 @@
 		</p>
     </div>
     <div class="col-xs-12 field-input">
-		<ui-select ng-model="field.fieldValue"
+		<ui-select ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
 		 		ng-focus="setActiveField(field._id, null, false)"
                 theme="selectize"
 			    search-enabled="true"

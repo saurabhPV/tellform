@@ -19,11 +19,11 @@
     <div class="col-xs-12 field-input container">
 		<div class="row-fluid">
             <label class="btn col-md-5 col-xs-12 option-text"
-				   ng-class="{activeBtn: field.fieldValue == 'true'}">
+				   ng-class="{activeBtn: $root.patentInfo[field.title.replace(' ', '_')] == 'true'}">
                 <input class="focusOn"
                     ng-style="{'color': design.colors.answerColor, 'border-color': design.colors.answerColor, 'display': 'none', 'margin-top': '10px'}"
                     type="radio" value="true"
-                    ng-model="field.fieldValue"
+                    ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
                     ng-model-options="{ debounce: 250 }"
                     ng-required="field.required"
 					ng-change="nextField()"/>
@@ -33,11 +33,11 @@
                 <span>{{ 'LEGAL_ACCEPT' | translate }}</span>
             </label>
             <label class="btn col-md-5 col-md-offset-1 col-xs-12 option-text"
-				   ng-class="{activeBtn: field.fieldValue == 'false'}">
+				   ng-class="{activeBtn: $root.patentInfo[field.title.replace(' ', '_')] == 'false'}">
                 <input class="focusOn"
 					ng-style="{'color': design.colors.answerColor, 'border-color': design.colors.answerColor, 'display': 'none', 'margin-top': '10px'}"
                     type="radio" value="false"
-                    ng-model="field.fieldValue"
+                    ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
                     ng-model-options="{ debounce: 250 }"
                     ng-required="field.required"
 					ng-change="nextField()"/>

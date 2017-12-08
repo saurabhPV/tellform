@@ -411,20 +411,24 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					delete form.submissions;
 					delete form.submitted;
 
-					var patentInfo = {}
-					if (localStorage.getItem("patentInfo")){
-						patentInfo = JSON.parse(localStorage.getItem("patentInfo"));
+					console.log("$rootScope.patentInfo : ", $rootScope.patentInfo);
+					if (!$rootScope.patentInfo) {
+						if (localStorage.getItem("patentInfo")) {
+							$rootScope.patentInfo = JSON.parse(localStorage.getItem("patentInfo"));
+						} else {
+							$rootScope.patentInfo = {}
+						}
 					}
-					console.log("patent info : ",patentInfo);
+					console.log("patent info : ",$rootScope.patentInfo);
 
 					for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {
 							$scope.myform.form_fields[i].fieldValue = $scope.myform.form_fields[i].fieldValue.option_value;
 						}
-						var fieldName="";
-						fieldName = $scope.myform.form_fields[i].title;
-						console.log("field name : " + fieldName.replace(" ", "_"));
-						patentInfo[fieldName.replace(" ", "_")] = $scope.myform.form_fields[i].fieldValue
+						// var fieldName="";
+						// fieldName = $scope.myform.form_fields[i].title;
+						// console.log("field name : " + fieldName.replace(" ", "_"));
+						// $rootScope.patentInfo[fieldName.replace(" ", "_")] = $scope.myform.form_fields[i].fieldValue
 
 						//Get rid of unnessecary attributes for each form field
 						delete form.form_fields[i].submissionId;
@@ -438,7 +442,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 					}
 
-					localStorage.setItem("patentInfo", JSON.stringify(patentInfo));
+					localStorage.setItem("patentInfo", JSON.stringify($rootScope.patentInfo));
 
 					setTimeout(function () {
 						if (formAction) {

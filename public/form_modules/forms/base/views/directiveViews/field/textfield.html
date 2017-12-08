@@ -24,12 +24,12 @@
             type="{{input_type}}"
 		   	ng-pattern="validateRegex"
 			placeholder="{{placeholder}}"
-			ng-class="{ 'no-border': !!field.fieldValue }"
+			ng-class="{ 'no-border': !!$root.patentInfo[field.title.replace(' ', '_')] }"
             class="focusOn text-field-input"
             ng-focus="setActiveField(field._id, null, false)"
-			ng-model="field.fieldValue"
+			ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
 			ng-model-options="{ debounce: 250 }"
-			value="field.fieldValue"
+			value="$root.patentInfo[field.title.replace(' ', '_')]"
 		   	on-enter-or-tab-key="nextField()"
 		   	on-tab-and-shift-key="prevField()"
 			ng-required="field.required"
@@ -46,11 +46,11 @@
     </div>
 </div>
 <div>
-	<div class="btn btn-lg btn-default" ng-disabled="!field.fieldValue || field.$invalid"
+	<div class="btn btn-lg btn-default" ng-disabled="!$root.patentInfo[field.title.replace(' ', '_')] || field.$invalid"
 		 style="padding: 4px; margin-top:8px;"
 		 ng-style="{'background-color':design.colors.buttonColor}"
 		 >
-			<button ng-disabled="!field.fieldValue || field.$invalid"
+			<button ng-disabled="!$root.patentInfo[field.title.replace(' ', '_')] || field.$invalid"
 				ng-style="{'background-color':design.colors.buttonColor, 'color':design.colors.buttonTextColor}"
                 ng-click="nextField()"
 				class="btn col-sm-5 col-xs-5">

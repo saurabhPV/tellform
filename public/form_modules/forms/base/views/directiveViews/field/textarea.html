@@ -19,10 +19,10 @@
 		</small>
 		<textarea class="textarea focusOn" type="text"
 		 	ng-focus="setActiveField(field._id, null, false)"
-			ng-model="field.fieldValue"
+			ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
 			ng-model-options="{ debounce: 250 }"
-			ng-class="{ 'no-border': !!field.fieldValue }"
-			value="{{field.fieldValue}}"
+			ng-class="{ 'no-border': !!$root.patentInfo[field.title.replace(' ', '_')] }"
+			value="{{$root.patentInfo[field.title.replace(' ', '_')]}}"
 			ng-required="field.required"
 		    on-enter-or-tab-key="nextField()"
 		    on-tab-and-shift-key="prevField()"
@@ -35,9 +35,9 @@
 	<div class="btn btn-lg btn-default"
 		 style="padding: 4px; margin-top:8px; background: rgba(255,255,255,0.5)"
 		 ng-style="{'background-color':design.colors.buttonColor}"
-		 ng-disabled="!field.fieldValue || field.$invalid"
+		 ng-disabled="!$root.patentInfo[field.title.replace(' ', '_')] || field.$invalid"
 		 >
-		<button ng-disabled="!field.fieldValue || forms.myForm.{{field.fieldType}}{{$index}}.$invalid"
+		<button ng-disabled="!$root.patentInfo[field.title.replace(' ', '_')] || forms.myForm.{{field.fieldType}}{{$index}}.$invalid"
 				ng-style="{'background-color':design.colors.buttonColor, 'color':design.colors.buttonTextColor}"
 				ng-click="$root.nextField()"
 				class="btn col-sm-5 col-xs-5">

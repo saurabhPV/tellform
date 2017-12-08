@@ -49,44 +49,53 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 				forms: '='
 			},
 			link: function(scope, element) {
+				if (!$rootScope.patentInfo){
+					if (localStorage.getItem("patentInfo")) {
+						$rootScope.patentInfo = JSON.parse(localStorage.getItem("patentInfo"));
+					}else{
+						$rootScope.patentInfo = {}
+					}
+				}
+				console.log("$rootScope.patentInfo : ",$rootScope.patentInfo)
+				
 
 				$rootScope.chooseDefaultOption = scope.chooseDefaultOption = function(type) {
 					if(type === 'yes_no'){
-						scope.field.fieldValue = 'true';
+						$rootScope.patentInfo[field.title.replace(" ", "_")] = 'true';
 					}else if(type === 'rating'){
-						scope.field.fieldValue = 0;
+						$rootScope.patentInfo[field.title.replace(" ", "_")] = 0;
 					}else if(scope.field.fieldType === 'radio'){
-						scope.field.fieldValue = scope.field.fieldOptions[0].option_value;
+						$rootScope.patentInfo[field.title.replace(" ", "_")] = scope.field.fieldOptions[0].option_value;
 					}else if(type === 'legal'){
-						scope.field.fieldValue = 'true';
+						$rootScope.patentInfo[field.title.replace(" ", "_")] = 'true';
 						$rootScope.nextField();
 					}
 				};
+				
                 scope.nextField = $rootScope.nextField;
 				scope.setActiveField = $rootScope.setActiveField;
 
 				var fieldName = "";
 				fieldName = scope.field.title.replace(" ", "_");
 
-				var patentInfo = {}
-				if (localStorage.getItem("patentInfo")) {
-					patentInfo = JSON.parse(localStorage.getItem("patentInfo"));
+				// $root$rootScope.patentInfo = $rootScope.patentInfo;
+				console.log("patentInfo : ", $rootScope.patentInfo);
+				// $rootScope.name = new Date();
+				if (!$rootScope.patentInfo[fieldName]) {
+					$rootScope.patentInfo[fieldName] = null;
 				}
-				console.log("patentInfo : ",patentInfo);
-				$rootScope.name = "sid";
-				scope.name = $rootScope.name;
-
+				console.log("$rootScope.patentInfo : ", $rootScope.patentInfo);
 				console.log("field name: "+fieldName);
-				console.log("patentInfo[fieldName] : " + patentInfo[fieldName]);
-				if (patentInfo[fieldName]){
-					scope.field.fieldValue = patentInfo[fieldName];
-					console.log("scope.field.fieldValue : " + scope.field.fieldValue);
-				}
+				console.log("patentInfo[fieldName] : " + $rootScope.patentInfo[fieldName]);
+				// if ($rootScope.patentInfo[fieldName]){
+				// 	$rootScope.patentInfo[field.title.replace(" ", "_")] = $rootScope.patentInfo[fieldName];
+				// 	console.log("$rootScope.patentInfo[field.title.replace(" ", "_")] : " + $rootScope.patentInfo[field.title.replace(" ", "_")]);
+				// }
 
 				//Set format only if field is a date
 				if(scope.field.fieldType === 'date'){
 					if (scope.field.chooseDefaultDate){
-						scope.field.fieldValue = new Date();
+						$rootScope.patentInfo[field.title.replace(" ", "_")] = new Date();
 					}
 					scope.dateOptions = {
 						changeYear: true,
