@@ -65,6 +65,24 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
                 scope.nextField = $rootScope.nextField;
 				scope.setActiveField = $rootScope.setActiveField;
 
+				var fieldName = "";
+				fieldName = scope.field.title.replace(" ", "_");
+
+				var patentInfo = {}
+				if (localStorage.getItem("patentInfo")) {
+					patentInfo = JSON.parse(localStorage.getItem("patentInfo"));
+				}
+				console.log("patentInfo : ",patentInfo);
+				$rootScope.name = "sid";
+				scope.name = $rootScope.name;
+
+				console.log("field name: "+fieldName);
+				console.log("patentInfo[fieldName] : " + patentInfo[fieldName]);
+				if (patentInfo[fieldName]){
+					scope.field.fieldValue = patentInfo[fieldName];
+					console.log("scope.field.fieldValue : " + scope.field.fieldValue);
+				}
+
 				//Set format only if field is a date
 				if(scope.field.fieldType === 'date'){
 					if (scope.field.chooseDefaultDate){
