@@ -19,7 +19,16 @@
 		</p>
     </div>
     <div class="col-xs-12 field-input">
-		<input ng-style="{'color': design.colors.answerColor, 'border-color': design.colors.answerColor}"
+
+<signature-pad accept="accept" clear="clear" style="border:1px solid black;" height="220" width="400" disabled="false"></signature-pad>
+<button class="btn btn-primary" ng-click="clear()">Clear</button>
+<button class="btn btn-primary" ng-click="signature = accept()">Print</button>
+    
+       <div class="result" ng-show="signature">
+            <img ng-src="{{ signature.dataUrl }}">
+        </div>
+
+<!-- 		<input ng-style="{'color': design.colors.answerColor, 'border-color': design.colors.answerColor}"
 			name="{{field.fieldType}}{{index}}"
             type="{{input_type}}"
 		   	ng-pattern="validateRegex"
@@ -33,7 +42,7 @@
 		   	on-enter-or-tab-key="nextField()"
 		   	on-tab-and-shift-key="prevField()"
 			ng-required="field.required"
-	        aria-describedby="inputError2Status" />
+	        aria-describedby="inputError2Status" /> -->
     </div>
     <div class="col-xs-12">
         <div ng-show="forms.myForm.{{field.fieldType}}{{index}}.$invalid && !!forms.myForm.{{field.fieldType}}{{index}}.$viewValue " class="alert alert-danger" role="alert">
@@ -51,9 +60,7 @@
 		 ng-style="{'background-color':design.colors.buttonColor}"
 		 >
 
- <div id="wrapSignatureCanvas" style="margin:0 auto;">
-  <canvas id = "signatureCanvas" style = "border: 1px solid red;margin:0 auto;"></canvas>
- </div>
+
 
            
 	</div>

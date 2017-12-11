@@ -46,7 +46,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                             field.fieldValue = '';
                             return field;
                         }).value();
-
+                    console.log("start");
+                    console.log($scope.myform.form_fields);
 					$scope.loading = false;
                     $scope.error = '';
 
@@ -352,6 +353,9 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						$scope.goToInvalid();
 						return;
 					}
+
+                    console.log("here");
+					return false;
 					var formAction="";
 					var _timeElapsed = TimeCounter.stopClock();
 					$scope.loading = true;

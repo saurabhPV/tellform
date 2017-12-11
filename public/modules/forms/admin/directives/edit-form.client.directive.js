@@ -131,12 +131,14 @@ angular.module('forms').directive('editFormDirective', ['$rootScope', 'FormField
 							};
 
 							$scope.saveField = function(){
+								console.log("save detail");
+								console.log($scope.isEdit);
 								if($scope.isEdit){
 									$scope.myform.form_fields[field_index] = $scope.field;
 								} else {
 									$scope.myform.form_fields.push(curr_field);
 								}
-
+                                console.log($scope.myform.form_fields);
 								$scope.$parent.update(false, $scope.$parent.myform, true, true, function(){
 									$uibModalInstance.close();
 								});

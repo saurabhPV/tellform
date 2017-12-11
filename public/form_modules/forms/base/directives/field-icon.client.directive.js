@@ -25,7 +25,8 @@ angular.module('view-form').directive('fieldIconDirective', function() {
 				'stripe': 'fa fa-credit-card',
 				'statement': 'fa fa-quote-left',
 				'yes_no': 'fa fa-toggle-on',
-				'number': 'fa fa-slack'
+				'number': 'fa fa-slack',
+				'signature': 'fa fa-pencil'
 			};
 			$scope.typeIcon = iconTypeMap[$scope.typeName];
         }

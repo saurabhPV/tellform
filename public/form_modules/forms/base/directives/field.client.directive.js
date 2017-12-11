@@ -32,7 +32,7 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 			];
 
 			var templateUrl = 'form_modules/forms/base/views/directiveViews/field/';
-
+           
 			if (__indexOf.call(supportedFields, type) >= 0) {
 				templateUrl = templateUrl+type+'.html';
 			}
@@ -79,7 +79,7 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 
 				var fieldType = scope.field.fieldType;
 
-				if(scope.field.fieldType === 'number' || scope.field.fieldType === 'textfield' || scope.field.fieldType === 'email' || scope.field.fieldType === 'link' || scope.field.fieldType === 'signature'){
+				if(scope.field.fieldType === 'number' || scope.field.fieldType === 'textfield' || scope.field.fieldType === 'email' || scope.field.fieldType === 'link' || scope.field.fieldType === 'signature1'){
 					switch(scope.field.fieldType){
 						case 'textfield':
 							scope.input_type = 'text';
@@ -94,7 +94,6 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 							break;
 						case 'signature':
 							scope.input_type = 'text';
-							scope.validateRegex = /^-?\d+$/;
 							break;							
 						default:
 							scope.input_type = 'url';
