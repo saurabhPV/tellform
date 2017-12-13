@@ -65,18 +65,17 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                 */
 				var evaluateLogicJump = function (field) {
 					var logicJump = field.logicJump;
-
 					if (logicJump.enabled) {
-						if (logicJump.expressionString && logicJump.valueB && field.fieldValue) {
+						if (logicJump.expressionString && logicJump.valueB && $rootScope.patentInfo[field.title.replace(" ", "_")]) {
 							var parse_tree = jsep(logicJump.expressionString);
 							var left, right;
 
 							if (parse_tree.left.name === 'field') {
-								left = field.fieldValue;
+								left = $rootScope.patentInfo[field.title.replace(" ", "_")];
 								right = logicJump.valueB;
 							} else {
 								left = logicJump.valueB;
-								right = field.fieldValue;
+								right = $rootScope.patentInfo[field.title.replace(" ", "_")];
 							}
 
 							if (field.fieldType === 'number' || field.fieldType === 'scale' || field.fieldType === 'rating') {
@@ -292,10 +291,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 				$rootScope.nextField = $scope.nextField = function () {
 					if ($scope.selected && $scope.selected.index > -1) {
-
 						if ($scope.selected._id !== FORM_ACTION_ID) {
 							var currField = $scope.myform.visible_form_fields[$scope.selected.index];
-
 							//Jump to logicJump's destination if it is true
 							if (currField.logicJump && currField.logicJump.jumpTo && evaluateLogicJump(currField)) {
 								$scope.setActiveField(currField.logicJump.jumpTo, null, true);
@@ -419,11 +416,11 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							$rootScope.patentInfo = {}
 						}
 					}
-					console.log("patent info : ",$rootScope.patentInfo);
+					console.log("patent info : ", $rootScope.patentInfo);
 
 					for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {
-							$scope.myform.form_fields[i].fieldValue = $scope.myform.form_fields[i].fieldValue.option_value;
+							$rootScope.patentInfo[$scope.myform.form_fields[i].title.replace(" ", "_")] = $rootScope.patentInfo[$scope.myform.form_fields[i].title.replace(" ", "_")].option_value;
 						}
 						// var fieldName="";
 						// fieldName = $scope.myform.form_fields[i].title;
