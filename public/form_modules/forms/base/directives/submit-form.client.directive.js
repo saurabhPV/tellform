@@ -296,10 +296,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							var currField = selectedField;
 							var buttonValue = $rootScope.patentInfo[currField.title.replace(" ", "_")];
 							if (buttonValue == "false" && currField.logicJump.action) {
-								setTimeout(function () {
-										window.location = currField.logicJump.action;
-										window.scrollTo(0, 0);
-								}, 500);
+								$scope.myform.startPage.showStart = true;
 							} else {
 								//Jump to logicJump's destination if it is true
 								if (currField.logicJump && currField.logicJump.jumpTo && evaluateLogicJump(currField)) {
