@@ -2,9 +2,9 @@
 	 	ng-click="setActiveField(field._id, index, true)"
 	 	key-to-truthy key-char-truthy="y" key-char-falsey="n" 
 	 	field="field"
-        on-tab-key="nextField()"
+        on-tab-key="nextField(field)"
         on-tab-and-shift-key="prevField()"
-        on-valid-key="nextField()">
+        on-valid-key="nextField(field)">
     <div class="col-xs-12 field-title" ng-style="{'color': design.colors.questionColor}">
         <h3 class="row">
 			<small class="field-number">
@@ -32,7 +32,7 @@
 					ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
 					ng-model-options="{ debounce: 250 }"
 					ng-required="field.required"
-                    ng-change="nextField()"/>
+                    ng-change="nextField(field)"/>
 				<div class="letter">
 					{{ 'Y' | translate }}
 				</div>
@@ -51,7 +51,7 @@
 			        ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
 			        ng-model-options="{ debounce: 250 }"
 			        ng-required="field.required"
-			        ng-change="nextField()"/>
+			        ng-change="nextField(field)"/>
 			    <div class="letter">
 				    {{ 'N' | translate }}
 			    </div>

@@ -1,5 +1,5 @@
 <div class="field row radio"
-	 on-enter-or-tab-key="nextField()"
+	 on-enter-or-tab-key="nextField(field)"
 	 on-tab-and-shift-key="prevField()"
 	 key-to-option field="field"
 	 ng-if="field.fieldOptions.length > 0">
@@ -32,7 +32,7 @@
                     ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
                     ng-model-options="{ debounce: 250 }"
                     ng-required="field.required"
-					ng-change="$root.nextField()"/>
+					ng-change="$root.nextField(field)"/>
 
                 <span ng-bind="option.option_value"></span>
             </label>

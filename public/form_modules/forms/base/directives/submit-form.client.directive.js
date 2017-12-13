@@ -289,17 +289,26 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					$scope.$apply();
 				};
 
-				$rootScope.nextField = $scope.nextField = function () {
+				$rootScope.nextField = $scope.nextField = function (selectedField) {
 					if ($scope.selected && $scope.selected.index > -1) {
 						if ($scope.selected._id !== FORM_ACTION_ID) {
-							var currField = $scope.myform.visible_form_fields[$scope.selected.index];
-							//Jump to logicJump's destination if it is true
-							if (currField.logicJump && currField.logicJump.jumpTo && evaluateLogicJump(currField)) {
-								$scope.setActiveField(currField.logicJump.jumpTo, null, true);
-							} else if ($scope.selected.index < $scope.myform.visible_form_fields.length - 1) {
-								$scope.setActiveField(null, $scope.selected.index + 1, true);
+							// var currField = $scope.myform.visible_form_fields[$scope.selected.index];
+							var currField = selectedField;
+							var buttonValue = $rootScope.patentInfo[currField.title.replace(" ", "_")];
+							if (buttonValue == "false" && currField.logicJump.action) {
+								setTimeout(function () {
+										window.location = currField.logicJump.action;
+										window.scrollTo(0, 0);
+								}, 500);
 							} else {
-								$scope.setActiveField(FORM_ACTION_ID, null, true);
+								//Jump to logicJump's destination if it is true
+								if (currField.logicJump && currField.logicJump.jumpTo && evaluateLogicJump(currField)) {
+									$scope.setActiveField(currField.logicJump.jumpTo, null, true);
+								} else if ($scope.selected.index < $scope.myform.visible_form_fields.length - 1) {
+									$scope.setActiveField(null, $scope.selected.index + 1, true);
+								} else {
+									$scope.setActiveField(FORM_ACTION_ID, null, true);
+								}
 							}
 						} else {
 							//If we are at the submit actions page, go to the first field

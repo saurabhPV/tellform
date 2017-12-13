@@ -17,14 +17,14 @@
 		<input-stars max="{{field.ratingOptions.steps}}"
 					 ng-init="$root.patentInfo[field.title.replace(' ', '_')] = 1"
                      on-shape-click="true"
-                     on-star-click="nextField()"
+                     on-star-click="nextField(field)"
 					 icon-full="{{field.ratingOptions.shape}}"
 					 icon-base="fa fa-3x"
 					 icon-empty="{{field.ratingOptions.shape}}"
 					 ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
 					 ng-model-options="{ debounce: 250 }"
 					 ng-required="field.required"
-					 on-enter-or-tab-key="nextField()"
+					 on-enter-or-tab-key="nextField(field)"
 					 on-tab-and-shift-key="prevField()"
 					 class="angular-input-stars focusOn">
 		</input-stars>

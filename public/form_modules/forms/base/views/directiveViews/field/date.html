@@ -24,10 +24,10 @@
 				   ng-model-options="{ debounce: 250 }"
 				   ng-required="field.required"
 				   placeholder="MM/DD/YYYY"
-				   on-tab-key="nextField()"
+				   on-tab-key="nextField(field)"
 				   on-tab-and-shift-key="prevField()"
 				   readonly='true'
-				   ng-change="nextField()">
+				   ng-change="nextField(field)">
         </div>
     </div>
 </div>

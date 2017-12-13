@@ -1,10 +1,10 @@
 <div class="field row radio legal"
-	 on-enter-or-tab-key="nextField()"
+	 on-enter-or-tab-key="nextField(field)"
      on-tab-and-shift-key="prevField()"
 	 key-to-truthy key-char-truthy="y" 
      key-char-falsey="n" 
      field="field" 
-     on-valid-key="nextField()">
+     on-valid-key="nextField(field)">
     <div class="col-xs-12 field-title" ng-style="{'color': design.colors.questionColor}">
     	<h3>
 			<small class="field-number">
@@ -26,7 +26,7 @@
                     ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
                     ng-model-options="{ debounce: 250 }"
                     ng-required="field.required"
-					ng-change="nextField()"/>
+					ng-change="nextField(field)"/>
 				<div class="letter" style="float:left">
 					{{ 'Y' | translate }}
 				</div>
@@ -40,7 +40,7 @@
                     ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
                     ng-model-options="{ debounce: 250 }"
                     ng-required="field.required"
-					ng-change="nextField()"/>
+					ng-change="nextField(field)"/>
 				<div class="letter" style="float:left">
 					{{ 'N' | translate }}
 				</div>

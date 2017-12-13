@@ -95,7 +95,7 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 				//Set format only if field is a date
 				if(scope.field.fieldType === 'date'){
 					if (scope.field.chooseDefaultDate){
-						$rootScope.patentInfo[field.title.replace(" ", "_")] = new Date();
+						$rootScope.patentInfo[scope.field.title.replace(" ", "_")] = new Date();
 					}
 					scope.dateOptions = {
 						changeYear: true,

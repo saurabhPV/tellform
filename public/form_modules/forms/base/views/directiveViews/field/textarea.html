@@ -24,7 +24,7 @@
 			ng-class="{ 'no-border': !!$root.patentInfo[field.title.replace(' ', '_')] }"
 			value="{{$root.patentInfo[field.title.replace(' ', '_')]}}"
 			ng-required="field.required"
-		    on-enter-or-tab-key="nextField()"
+		    on-enter-or-tab-key="nextField(field)"
 		    on-tab-and-shift-key="prevField()"
 			style="border: none; border-left: lightgrey dashed 2px;">
 		</textarea>
@@ -39,7 +39,7 @@
 		 >
 		<button ng-disabled="!$root.patentInfo[field.title.replace(' ', '_')] || forms.myForm.{{field.fieldType}}{{$index}}.$invalid"
 				ng-style="{'background-color':design.colors.buttonColor, 'color':design.colors.buttonTextColor}"
-				ng-click="$root.nextField()"
+				ng-click="$root.nextField(field)"
 				class="btn col-sm-5 col-xs-5">
 
 			{{ 'OK' | translate }} <i class="fa fa-check"></i>
