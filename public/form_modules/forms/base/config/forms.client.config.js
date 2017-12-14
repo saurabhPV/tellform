@@ -48,3 +48,8 @@ angular.module('view-form').value('supportedFields', [
 
 angular.module('view-form').constant('VIEW_FORM_URL', '/forms/:formId/render');
 
+angular.module('view-form').constant('VIEW_FORM_API_URL', {apiEndpoint :'http://d1c1f28d.ngrok.io/Ptest/api/:pageName',
+urls: {
+	GetPatient: "Patient/{{patientId}}"
+}});
+

@@ -9,8 +9,8 @@ jsep.addBinaryOp('!begins', 10);
 jsep.addBinaryOp('ends', 10);
 jsep.addBinaryOp('!ends', 10);
 
-angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout',
-	function ($http, TimeCounter, $filter, $rootScope, SendVisitorData, $translate, $timeout) {
+angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout', 'dataFactory', 'VIEW_FORM_API_URL', '$q', '$location',
+	function ($http, TimeCounter, $filter, $rootScope, SendVisitorData, $translate, $timeout, dataFactory, VIEW_FORM_API_URL, $q, $location) {
 		return {
 			templateUrl: 'form_modules/forms/base/views/directiveViews/form/submit-form.client.view.html',
 			restrict: 'E',
@@ -19,6 +19,35 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				ispreview: '='
 			},
 			controller: function ($document, $window, $scope) {
+				if ($location.search().id) {
+					var deferred = $q.defer();
+					dataFactory.get({ pageName: VIEW_FORM_API_URL.urls.GetPatient.replace("{{patientId}}", $location.search().id) }).$promise.then(function (data) {
+						deferred.resolve(data);
+						console.log("patent data : ", data);
+						if (!$rootScope.patentInfo) {
+							if (localStorage.getItem("patentInfo")) {
+								$rootScope.patentInfo = JSON.parse(localStorage.getItem("patentInfo"));
+							} else {
+								$rootScope.patentInfo = {}
+							}
+						}
+
+						$rootScope.patentInfo.first_name = data.patient.first_name;
+						$rootScope.patentInfo.last_name = data.patient.last_name;
+						$rootScope.patentInfo.email = _.filter(data.patient.emailAddress, function (field) {
+							return (field.isPrimary === true);
+						})[0].email;
+						$rootScope.patentInfo.phNumber = _.filter(data.patient.phoneNumber, function (field) {
+							return (field.isPrimary === true);
+						})[0].phNumber;
+
+						console.log("$rootScope.patentInfo : ", $rootScope.patentInfo);
+
+					}, function (reason) {
+						deferred.reject({ redirectTo: 'unauthorizedFormAccess' });
+						console.log("reason : ", reason);
+					});
+				}
 				var NOSCROLL = false;
 				var FORM_ACTION_ID = 'submit_field';
 				$scope.forms = {};
