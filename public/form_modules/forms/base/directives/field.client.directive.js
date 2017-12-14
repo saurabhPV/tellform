@@ -103,6 +103,10 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 					fieldType = 'textfield';
 				}
 
+				if(scope.field.fieldType === 'signature'){
+					 scope.input_type = 'text';
+				}
+
 				var template = getTemplateHtml(fieldType);
 				element.html(template).show();
 				var output = $compile(element.contents())(scope);

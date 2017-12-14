@@ -1,4 +1,4 @@
-<div class="textfield field row"
+<div class="field row"
 	 ng-click="setActiveField(field._id, index, true)">
 	<div class="col-xs-12 field-title row-fluid" ng-style="{'color': design.colors.questionColor}">
     	<h3 class="col-xs-12">
@@ -19,49 +19,18 @@
 		</p>
     </div>
     <div class="col-xs-12 field-input">
+<input style="display: none;" type="{{input_type}}" class="signature-pad" name="{{field.fieldType}}{{index}}" ng-model="field.fieldValue" ng-focus="setActiveField(field._id, null, false)" ng-value="{{field.fieldValue}}" id="sign" ng-required="field.required">
 
-<signature-pad accept="accept" clear="clear" style="border:1px solid black;" height="220" width="400" disabled="false"></signature-pad>
-<button class="btn btn-primary" ng-click="clear()">Clear</button>
-<button class="btn btn-primary" ng-click="signature = accept()">Print</button>
-    
-       <div class="result" ng-show="signature">
-            <img ng-src="{{ signature.dataUrl }}">
-        </div>
+<signature-pad id="signature-pad" accept="accept" clear="clear" style="border:1px solid black;" height="220" width="400" disabled="false" dataurl="field.fieldValue"></signature-pad>
 
-<!-- 		<input ng-style="{'color': design.colors.answerColor, 'border-color': design.colors.answerColor}"
-			name="{{field.fieldType}}{{index}}"
-            type="{{input_type}}"
-		   	ng-pattern="validateRegex"
-			placeholder="{{placeholder}}"
-			ng-class="{ 'no-border': !!field.fieldValue }"
-            class="focusOn text-field-input"
-            ng-focus="setActiveField(field._id, null, false)"
-			ng-model="field.fieldValue"
-			ng-model-options="{ debounce: 250 }"
-			value="field.fieldValue"
-		   	on-enter-or-tab-key="nextField()"
-		   	on-tab-and-shift-key="prevField()"
-			ng-required="field.required"
-	        aria-describedby="inputError2Status" /> -->
+<button class="btn btn-primary" ng-hide="field.fieldValue == ''" style="margin-top:20px;" ng-click="clear()">Clear</button>
+
     </div>
     <div class="col-xs-12">
-        <div ng-show="forms.myForm.{{field.fieldType}}{{index}}.$invalid && !!forms.myForm.{{field.fieldType}}{{index}}.$viewValue " class="alert alert-danger" role="alert">
+        <div ng-show="forms.myForm.{{field.fieldType}}{{index}}.$invalid && !!forms.myForm.{{field.fieldType}}{{index}}.$viewValue" class="alert alert-danger" role="alert">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
             <span class="sr-only">{{ 'ERROR' | translate }}:</span>
-			<span ng-if="field.fieldType == 'email'"> {{ 'ERROR_EMAIL_INVALID' | translate }} </span>
-			<span ng-if="field.fieldType == 'number'"> {{ 'ERROR_NOT_A_NUMBER' | translate }} </span>
-			<span ng-if="field.fieldType == 'link'"> {{ 'ERROR_URL_INVALID' | translate }} </span>
         </div>
     </div>
 </div>
-<div>
-	<div class="btn btn-lg btn-default" ng-disabled="!field.fieldValue || field.$invalid"
-		 style="padding: 4px; margin-top:8px;"
-		 ng-style="{'background-color':design.colors.buttonColor}"
-		 >
 
-
-
-           
-	</div>
-</div>

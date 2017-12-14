@@ -9,8 +9,8 @@ jsep.addBinaryOp('!begins', 10);
 jsep.addBinaryOp('ends', 10);
 jsep.addBinaryOp('!ends', 10);
 
-angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout',
-    function ($http, TimeCounter, $filter, $rootScope, SendVisitorData, $translate, $timeout) {
+angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout' , 'AwsDocument',
+    function ($http, TimeCounter, $filter, $rootScope, SendVisitorData, $translate, $timeout, AwsDocument) {
         return {
             templateUrl: 'form_modules/forms/base/views/directiveViews/form/submit-form.client.view.html',
 			restrict: 'E',
@@ -147,9 +147,15 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                     if($scope.selected === null || (!field_id && field_index === null) )  {
                     	return;
                     }
-	    			
+	    			                    
+
 	    			if(!field_id){
 	    				field_id = $scope.myform.visible_form_fields[field_index]._id;
+                         
+                       // console.log($scope.myform.visible_form_fields[field_index].fieldType);
+
+
+
 					} else if(field_index === null){
 						field_index = $scope.myform.visible_form_fields.length
 
@@ -200,6 +206,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                 };
 
                 $scope.$watch('selected.index', function(oldValue, newValue){
+                	console.log("old value");
+                	console.log(oldValue);
+                	console.log("newValue");
+                	console.log(newValue);
                 	if(oldValue !== newValue && newValue < $scope.myform.form_fields.length){
         		        //Only send analytics data if form has not been submitted
 						if(!$scope.myform.submitted){
@@ -349,19 +359,27 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				};
 
 				$rootScope.submitForm = $scope.submitForm = function() {
+
+                    
+                    $scope.user = {
+                    	"userid": "2341438314014818222782651308423710011616831",
+                    	"uploadphoto": "https://s1003demo.s3.ap-south-1.amazonaws.com/profile-380.png?x-amz-acl=public-read&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAI2ORDCDWT5D6PHCA%2F20171214%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20171214T072701Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Signature=97eb8c3622ef35a43393ea584a27b024d3837615287891a0ef1eb8cceb4dac2c"
+                    }                                        
+ 
+                    console.log($scope.forms);
+                    console.log($scope.myform);
 					if($scope.forms.myForm.$invalid){
 						$scope.goToInvalid();
 						return;
 					}
 
-                    console.log("here");
-					return false;
+                  //  return false;
 					var formAction="";
 					var _timeElapsed = TimeCounter.stopClock();
 					$scope.loading = true;
 
 					var form = _.cloneDeep($scope.myform);
-					console.log("form.endPage.action "+form.endPage.action);
+					
 					if(form.endPage.action){
 						formAction = form.endPage.action;
 					}
@@ -383,24 +401,72 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					delete form.design;
 					delete form.submissions;
 					delete form.submitted;
+
+					form.signatureUrl = '';
 					for(var i=0; i < $scope.myform.form_fields.length; i++){
 						if($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved){
 							$scope.myform.form_fields[i].fieldValue = $scope.myform.form_fields[i].fieldValue.option_value;
 						}
+
+                        if(form.form_fields[i].fieldType == 'signature'){
+                        	form.signatureUrl = form.form_fields[i].fieldValue;
+                        	form.signatureId = form.form_fields[i]._id;
+                        }
+
 						
 						//Get rid of unnessecary attributes for each form field
 						delete form.form_fields[i].submissionId;
-                        			delete form.form_fields[i].disabled;
-                        			delete form.form_fields[i].ratingOptions;
-                       				delete form.form_fields[i].fieldOptions;
-                        			delete form.form_fields[i].logicJump;
-                        			delete form.form_fields[i].description;
-                        			delete form.form_fields[i].validFieldTypes;
-                        			delete form.form_fields[i].fieldType;	
+                        delete form.form_fields[i].disabled;
+                        delete form.form_fields[i].ratingOptions;
+                       	delete form.form_fields[i].fieldOptions;
+                        delete form.form_fields[i].logicJump;
+                        delete form.form_fields[i].description;
+                        delete form.form_fields[i].validFieldTypes;
+                        delete form.form_fields[i].fieldType;	
 					 
 					}
 
 					setTimeout(function () {
+
+                           
+                           console.log(form);
+
+                           if(form.signatureUrl){
+
+                              var awsFile = AwsDocument.getFile(form.signatureUrl);
+                              console.log(awsFile);        
+                           
+                              AwsDocument.upload(awsFile,$scope.user.uploadphoto,function(result){
+                               	console.log(result);
+                                 return false;
+                                for(var i=0; i < $scope.myform.form_fields.length; i++){
+                                     if(form.signatureId == form.form_fields[i]._id){
+                                         form.form_fields[i].fieldValue = result;
+                                     }                                      
+                                }
+                                
+                                // console.log(form);
+                               // saveFormDetail(form,formAction,_timeElapsed);
+                               	
+                              },function(){
+                                  console.log("failed");
+                                  return false;
+                              });
+
+
+                           }else{
+                              console.log("without sign");
+                              return false;
+                            //  saveFormDetail(form,formAction,_timeElapsed);
+                           }
+                           return false;
+					}, 500);
+                };
+
+
+
+                var saveFormDetail = function(form,formAction,_timeElapsed){
+
 						$scope.submitPromise = $http.post('/forms/' + $scope.myform._id, form)
 							.success(function (data, status) {
 								$scope.myform.submitted = true;
@@ -426,8 +492,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										},100);
 								}							
 							});
-					}, 500);
-                };
+
+
+                }
+
 
                 //Reload our form
 				$scope.reloadForm();
