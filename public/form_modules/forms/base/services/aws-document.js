@@ -3,12 +3,9 @@
 //Document upload service used for upload document on aws
 angular.module('view-form').service('AwsDocument',
 	function($http){
-		//Private variables
+
 	    this.upload = function(docFile,url,success,error) {
-           
-               // var fd = new FormData();
-               // fd.append('file', docFile);
-            
+                       
                $http({
                       url: url,
                       headers: {'Content-Type': docFile.type },
@@ -29,53 +26,6 @@ angular.module('view-form').service('AwsDocument',
                   console.log(result);
                   error(result);                
                });               
-
-
-
-               // $http.put(url, fd, {                
-               //    headers : {'Content-Type': docFile.type}
-               // })            
-               // .success(function(result){
-               //   console.log("success");
-               //   console.log(result);
-               //   success(result);                
-               // })            
-               // .error(function(result){
-               //    console.log("fail");
-               //    console.log(result);
-               //    error(result);                
-               // });
-
-
-          //  var current_url = "https://api.github.com/users";
-          // //  success(url); 
-          //   // $.ajax({
-          //   //      url: url, // the presigned URL
-          //   //      type: 'PUT',
-          //   //      data: docFile,
-          //   //      processData : false,
-          //   //      contentType: docFile.type,
-          //   //      crossDomain:true,
-          //   //      cache:false,
-          //   //      success: function(response) {
-          //   //        success(response);
-          //   //      },
-          //   //      error: function(response) {
-          //   //        error(response);
-          //   //      }
-          //   //  });
-
-          //   $http.get(current_url).then(success,error);
-            // $http.put(url, {data: docFile}).then(function(result){
-            //      console.log(result);
-            //      success(result);
-            // }, function(result){
-            //       console.log(result);
-            //       error(result);
-            // });
-
-
-
 
 	    };
 

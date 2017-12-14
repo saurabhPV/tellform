@@ -206,10 +206,6 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                 };
 
                 $scope.$watch('selected.index', function(oldValue, newValue){
-                	console.log("old value");
-                	console.log(oldValue);
-                	console.log("newValue");
-                	console.log(newValue);
                 	if(oldValue !== newValue && newValue < $scope.myform.form_fields.length){
         		        //Only send analytics data if form has not been submitted
 						if(!$scope.myform.submitted){
@@ -426,40 +422,30 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					 
 					}
 
-					setTimeout(function () {
-
-                           
-                           console.log(form);
+					setTimeout(function () {                          
 
                            if(form.signatureUrl){
 
-                              var awsFile = AwsDocument.getFile(form.signatureUrl);
-                              console.log(awsFile);        
+                              var awsFile = AwsDocument.getFile(form.signatureUrl);                            
                            
                               AwsDocument.upload(awsFile,$scope.user.uploadphoto,function(result){
-                               	console.log(result);
-                                 return false;
+
                                 for(var i=0; i < $scope.myform.form_fields.length; i++){
                                      if(form.signatureId == form.form_fields[i]._id){
                                          form.form_fields[i].fieldValue = result;
                                      }                                      
                                 }
                                 
-                                // console.log(form);
-                               // saveFormDetail(form,formAction,_timeElapsed);
+                                saveFormDetail(form,formAction,_timeElapsed);
                                	
                               },function(){
-                                  console.log("failed");
                                   return false;
                               });
 
 
                            }else{
-                              console.log("without sign");
-                              return false;
-                            //  saveFormDetail(form,formAction,_timeElapsed);
+                              saveFormDetail(form,formAction,_timeElapsed);
                            }
-                           return false;
 					}, 500);
                 };
 
