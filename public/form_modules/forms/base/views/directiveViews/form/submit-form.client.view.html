@@ -1,4 +1,5 @@
 <!-- Start Page View -->
+<!--- Client view page -->
 <div ng-show="!myform.submitted && myform.startPage.showStart" class="form-submitted" style="padding-top: 35vh;">
     <div class="row">
         <div class="col-xs-12 text-center" style="overflow-wrap: break-word;">
@@ -40,7 +41,7 @@
 
     <div class="row form-field-wrapper">
         <form name="forms.myForm" novalidate class="submission-form">
-
+            
             <div ng-repeat="field in myform.form_fields" ng-if="!field.deletePreserved" data-index="{{$index}}" data-id="{{field._id}}" ng-class="{activeField: selected._id == field._id }" class="row field-directive">
 
                 <field-directive field="field" design="myform.design" index="$index" forms="forms">

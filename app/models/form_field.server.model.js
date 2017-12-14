@@ -124,7 +124,8 @@ function BaseFieldSchema(){
 				'yes_no',
 				'natural',
 				'stripe',
-				'number'
+				'number',
+				'signature'
 			]
 		},
 		fieldValue: Schema.Types.Mixed

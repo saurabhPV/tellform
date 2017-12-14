@@ -1,0 +1,36 @@
+<div class="field row"
+	 ng-click="setActiveField(field._id, index, true)">
+	<div class="col-xs-12 field-title row-fluid" ng-style="{'color': design.colors.questionColor}">
+    	<h3 class="col-xs-12">
+    		<small class="field-number">
+				{{index+1}}
+				<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+			</small>
+
+			{{field.title}}
+
+    		<span class="required-error" ng-show="!field.required">
+    			({{ 'OPTIONAL' | translate }})
+    		</span>
+    	</h3>
+
+		<p class="col-xs-12">
+			<small>{{field.description}}</small>
+		</p>
+    </div>
+    <div class="col-xs-12 field-input">
+<input style="display: none;" type="{{input_type}}" class="signature-pad" name="{{field.fieldType}}{{index}}" ng-model="field.fieldValue" ng-focus="setActiveField(field._id, null, false)" ng-value="{{field.fieldValue}}" id="sign" ng-required="field.required">
+
+<signature-pad id="signature-pad" accept="accept" clear="clear" style="border:1px solid black;" height="220" width="400" disabled="false" dataurl="field.fieldValue"></signature-pad>
+
+<button class="btn btn-primary" ng-hide="field.fieldValue == ''" style="margin-top:20px;" ng-click="clear()">Clear</button>
+
+    </div>
+    <div class="col-xs-12">
+        <div ng-show="forms.myForm.{{field.fieldType}}{{index}}.$invalid && !!forms.myForm.{{field.fieldType}}{{index}}.$viewValue" class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">{{ 'ERROR' | translate }}:</span>
+        </div>
+    </div>
+</div>
+

@@ -43,7 +43,8 @@ angular.module('view-form').value('supportedFields', [
 	'rating',
 	'yes_no',
 	'number',
-	'natural'
+	'natural',
+	'signature'
 ]);
 
 angular.module('view-form').constant('VIEW_FORM_URL', '/forms/:formId/render');

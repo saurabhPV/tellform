@@ -9,8 +9,8 @@ jsep.addBinaryOp('!begins', 10);
 jsep.addBinaryOp('ends', 10);
 jsep.addBinaryOp('!ends', 10);
 
-angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout', 'dataFactory', 'VIEW_FORM_API_URL', '$q', '$location',
-	function ($http, TimeCounter, $filter, $rootScope, SendVisitorData, $translate, $timeout, dataFactory, VIEW_FORM_API_URL, $q, $location) {
+angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout', 'dataFactory', 'VIEW_FORM_API_URL', '$q', '$location','AwsDocument',
+	function ($http, TimeCounter, $filter, $rootScope, SendVisitorData, $translate, $timeout, dataFactory, VIEW_FORM_API_URL, $q, $location, AwsDocument) {
 		return {
 			templateUrl: 'form_modules/forms/base/views/directiveViews/form/submit-form.client.view.html',
 			restrict: 'E',
@@ -31,6 +31,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 								$rootScope.patentInfo = {}
 							}
 						}
+
+						$rootScope.patentData = data;
 
 						$rootScope.patentInfo.first_name = data.patient.first_name;
 						$rootScope.patentInfo.last_name = data.patient.last_name;
@@ -178,6 +180,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					if (!field_id) {
 						field_id = $scope.myform.visible_form_fields[field_index]._id;
 					} else if (field_index === null) {
+
 						field_index = $scope.myform.visible_form_fields.length
 
 						for (var i = 0; i < $scope.myform.visible_form_fields.length; i++) {
@@ -410,16 +413,30 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					};
 				};
 
-				$rootScope.submitForm = $scope.submitForm = function () {
-					if ($scope.forms.myForm.$invalid) {
+
+				$rootScope.submitForm = $scope.submitForm = function() {
+
+                    
+                    // $scope.user = {
+                    // 	"userid": "2341438314014818222782651308423710011616831",
+                    // 	"uploadphoto": "https://s1003demo.s3.ap-south-1.amazonaws.com/profile-380.png?x-amz-acl=public-read&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAI2ORDCDWT5D6PHCA%2F20171214%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20171214T072701Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Signature=97eb8c3622ef35a43393ea584a27b024d3837615287891a0ef1eb8cceb4dac2c"
+                    // }                                        
+ 
+                    console.log($scope.forms);
+                    console.log($scope.myform);
+					if($scope.forms.myForm.$invalid){
 						$scope.goToInvalid();
 						return;
 					}
-					var formAction = "";
+
+                  //  return false;
+					var formAction="";
+
 					var _timeElapsed = TimeCounter.stopClock();
 					$scope.loading = true;
 
 					var form = _.cloneDeep($scope.myform);
+
 					console.log("form.endPage.action " + form.endPage.action);
 					if (form.endPage.action) {
 						formAction = form.endPage.action;
@@ -443,6 +460,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					delete form.submissions;
 					delete form.submitted;
 
+
 					console.log("$rootScope.patentInfo : ", $rootScope.patentInfo);
 					if (!$rootScope.patentInfo) {
 						if (localStorage.getItem("patentInfo")) {
@@ -452,6 +470,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						}
 					}
 					console.log("patent info : ", $rootScope.patentInfo);
+                    form.signatureUrl = '';
 
 					for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {
@@ -461,6 +480,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						// fieldName = $scope.myform.form_fields[i].title;
 						// console.log("field name : " + fieldName.replace(" ", "_"));
 						// $rootScope.patentInfo[fieldName.replace(" ", "_")] = $scope.myform.form_fields[i].fieldValue
+
+                        if(form.form_fields[i].fieldType == 'signature'){
+                        	form.signatureUrl = form.form_fields[i].fieldValue;
+                        	form.signatureId = form.form_fields[i]._id;
+                        }
+
 
 						//Get rid of unnessecary attributes for each form field
 						delete form.form_fields[i].submissionId;
@@ -481,7 +506,39 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							window.location = formAction;
 							window.scrollTo(0, 0);
 						}
-						/*$scope.submitPromise = $http.post('/forms/' + $scope.myform._id, form)
+
+                        if(form.signatureUrl){
+
+                              var awsFile = AwsDocument.getFile(form.signatureUrl);                            
+                           
+							  AwsDocument.upload(awsFile, $rootScope.patentData.uploadphoto,function(result){
+
+                                for(var i=0; i < $scope.myform.form_fields.length; i++){
+                                     if(form.signatureId == form.form_fields[i]._id){
+                                         form.form_fields[i].fieldValue = result;
+                                     }                                      
+                                }
+                                
+                                saveFormDetail(form,formAction,_timeElapsed);
+                               	
+                              },function(){
+                                  return false;
+                              });
+
+
+                           }else{
+                              saveFormDetail(form,formAction,_timeElapsed);
+                        }
+
+
+					}, 500);
+				};
+
+
+
+                var saveFormDetail = function(form,formAction,_timeElapsed){
+
+						$scope.submitPromise = $http.post('/forms/' + $scope.myform._id, form)
 							.success(function (data, status) {
 								$scope.myform.submitted = true;
 								$scope.loading = false;
@@ -505,9 +562,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										 $window.animate(window.scrollTo(0, 0));
 										},100);
 								}							
-							});*/
-					}, 500);
-				};
+							});
+
+
+                }
+
+
 
 				//Reload our form
 				$scope.reloadForm();
