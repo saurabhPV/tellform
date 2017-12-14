@@ -33,6 +33,7 @@ angular.module('forms').directive('editFormDirective', ['$rootScope', 'FormField
 				 ** EditModal Functions
 				 */
 				$scope.openEditModal = function(curr_field, isEdit, field_index){
+					console.log("field name : "+ JSON.stringify(curr_field));
 					$scope.editFieldModal = $uibModal.open({
 						animation: true,
 						templateUrl: 'editFieldModal.html',
@@ -130,12 +131,14 @@ angular.module('forms').directive('editFormDirective', ['$rootScope', 'FormField
 							};
 
 							$scope.saveField = function(){
+								console.log("save detail");
+								console.log($scope.isEdit);
 								if($scope.isEdit){
 									$scope.myform.form_fields[field_index] = $scope.field;
 								} else {
 									$scope.myform.form_fields.push(curr_field);
 								}
-
+                                console.log($scope.myform.form_fields);
 								$scope.$parent.update(false, $scope.$parent.myform, true, true, function(){
 									$uibModalInstance.close();
 								});
@@ -277,6 +280,7 @@ angular.module('forms').directive('editFormDirective', ['$rootScope', 'FormField
                 // Add a new field
                 $scope.addNewField = function(fieldType){
                     // increment lastAddedID counter
+                    console.log("here");
                     $scope.addField.lastAddedID++;
                     var fieldTitle = fieldType;
 
