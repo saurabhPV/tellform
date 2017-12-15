@@ -75,7 +75,11 @@ angular.module('forms').service('FormFields', [ '$rootScope', '$translate', 'Aut
 		    {
 		        name : 'signature',
 		        value : $translate.instant('SIGNATURE')
-		    }		    
+		    },
+		    {
+		    	name : 'pain_point',
+		    	value : $translate.instant('PAIN_POINT')
+		    }
 		];
 	}
 
