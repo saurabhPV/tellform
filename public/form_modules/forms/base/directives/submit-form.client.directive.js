@@ -24,26 +24,28 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					dataFactory.get({ pageName: VIEW_FORM_API_URL.urls.GetPatient.replace("{{patientId}}", $location.search().id) }).$promise.then(function (data) {
 						deferred.resolve(data);
 						console.log("patent data : ", data);
-						if (!$rootScope.patentInfo) {
-							if (localStorage.getItem("patentInfo")) {
-								$rootScope.patentInfo = JSON.parse(localStorage.getItem("patentInfo"));
+						if (!$rootScope.patientInfo) {
+							if (localStorage.getItem("patientInfo")) {
+								$rootScope.patientInfo = JSON.parse(localStorage.getItem("patientInfo"));
 							} else {
-								$rootScope.patentInfo = {}
+								$rootScope.patientInfo = {}
 							}
 						}
 
 						$rootScope.patentData = data;
 
-						$rootScope.patentInfo.first_name = data.patient.first_name;
-						$rootScope.patentInfo.last_name = data.patient.last_name;
-						$rootScope.patentInfo.email = _.filter(data.patient.emailAddress, function (field) {
+						// var patient = data.patient
+
+						$rootScope.patientInfo.first_name = data.patient.first_name;
+						$rootScope.patientInfo.last_name = data.patient.last_name;
+						$rootScope.patientInfo.email = _.filter(data.patient.emailAddress, function (field) {
 							return (field.isPrimary === true);
 						})[0].email;
-						$rootScope.patentInfo.phNumber = _.filter(data.patient.phoneNumber, function (field) {
+						$rootScope.patientInfo.phNumber = _.filter(data.patient.phoneNumber, function (field) {
 							return (field.isPrimary === true);
 						})[0].phNumber;
 
-						console.log("$rootScope.patentInfo : ", $rootScope.patentInfo);
+						console.log("$rootScope.patientInfo : ", $rootScope.patientInfo);
 
 					}, function (reason) {
 						deferred.reject({ redirectTo: 'unauthorizedFormAccess' });
@@ -97,16 +99,16 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				var evaluateLogicJump = function (field) {
 					var logicJump = field.logicJump;
 					if (logicJump.enabled) {
-						if (logicJump.expressionString && logicJump.valueB && $rootScope.patentInfo[field.title.replace(" ", "_")]) {
+						if (logicJump.expressionString && logicJump.valueB && $rootScope.patientInfo[field.title.replace(" ", "_")]) {
 							var parse_tree = jsep(logicJump.expressionString);
 							var left, right;
 
 							if (parse_tree.left.name === 'field') {
-								left = $rootScope.patentInfo[field.title.replace(" ", "_")];
+								left = $rootScope.patientInfo[field.title.replace(" ", "_")];
 								right = logicJump.valueB;
 							} else {
 								left = logicJump.valueB;
-								right = $rootScope.patentInfo[field.title.replace(" ", "_")];
+								right = $rootScope.patientInfo[field.title.replace(" ", "_")];
 							}
 
 							if (field.fieldType === 'number' || field.fieldType === 'scale' || field.fieldType === 'rating') {
@@ -326,7 +328,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						if ($scope.selected._id !== FORM_ACTION_ID) {
 							// var currField = $scope.myform.visible_form_fields[$scope.selected.index];
 							var currField = selectedField;
-							var buttonValue = $rootScope.patentInfo[currField.title.replace(" ", "_")];
+							var buttonValue = $rootScope.patientInfo[currField.title.replace(" ", "_")];
 							if (buttonValue == "false" && currField.logicJump.action) {
 								$scope.myform.startPage.showStart = true;
 							} else {
@@ -461,25 +463,25 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					delete form.submitted;
 
 
-					console.log("$rootScope.patentInfo : ", $rootScope.patentInfo);
-					if (!$rootScope.patentInfo) {
-						if (localStorage.getItem("patentInfo")) {
-							$rootScope.patentInfo = JSON.parse(localStorage.getItem("patentInfo"));
+					console.log("$rootScope.patientInfo : ", $rootScope.patientInfo);
+					if (!$rootScope.patientInfo) {
+						if (localStorage.getItem("patientInfo")) {
+							$rootScope.patientInfo = JSON.parse(localStorage.getItem("patientInfo"));
 						} else {
-							$rootScope.patentInfo = {}
+							$rootScope.patientInfo = {}
 						}
 					}
-					console.log("patent info : ", $rootScope.patentInfo);
+					console.log("patent info : ", $rootScope.patientInfo);
                     form.signatureUrl = '';
 
 					for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {
-							$rootScope.patentInfo[$scope.myform.form_fields[i].title.replace(" ", "_")] = $rootScope.patentInfo[$scope.myform.form_fields[i].title.replace(" ", "_")].option_value;
+							$rootScope.patientInfo[$scope.myform.form_fields[i].title.replace(" ", "_")] = $rootScope.patientInfo[$scope.myform.form_fields[i].title.replace(" ", "_")].option_value;
 						}
 						// var fieldName="";
 						// fieldName = $scope.myform.form_fields[i].title;
 						// console.log("field name : " + fieldName.replace(" ", "_"));
-						// $rootScope.patentInfo[fieldName.replace(" ", "_")] = $scope.myform.form_fields[i].fieldValue
+						// $rootScope.patientInfo[fieldName.replace(" ", "_")] = $scope.myform.form_fields[i].fieldValue
 
                         if(form.form_fields[i].fieldType == 'signature'){
                         	form.signatureUrl = form.form_fields[i].fieldValue;
@@ -499,7 +501,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 					}
 
-					localStorage.setItem("patentInfo", JSON.stringify($rootScope.patentInfo));
+					localStorage.setItem("patientInfo", JSON.stringify($rootScope.patientInfo));
 
 					setTimeout(function () {
 						if (formAction) {

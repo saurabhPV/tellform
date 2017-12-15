@@ -50,25 +50,25 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 				forms: '='
 			},
 			link: function(scope, element) {
-				if (!$rootScope.patentInfo){
-					if (localStorage.getItem("patentInfo")) {
-						$rootScope.patentInfo = JSON.parse(localStorage.getItem("patentInfo"));
+				if (!$rootScope.patientInfo){
+					if (localStorage.getItem("patientInfo")) {
+						$rootScope.patientInfo = JSON.parse(localStorage.getItem("patientInfo"));
 					}else{
-						$rootScope.patentInfo = {}
+						$rootScope.patientInfo = {}
 					}
 				}
-				console.log("$rootScope.patentInfo : ",$rootScope.patentInfo)
+				console.log("$rootScope.patientInfo : ",$rootScope.patientInfo)
 				
 
 				$rootScope.chooseDefaultOption = scope.chooseDefaultOption = function(type) {
 					if(type === 'yes_no'){
-						$rootScope.patentInfo[field.title.replace(" ", "_")] = 'true';
+						$rootScope.patientInfo[field.title.replace(" ", "_")] = 'true';
 					}else if(type === 'rating'){
-						$rootScope.patentInfo[field.title.replace(" ", "_")] = 0;
+						$rootScope.patientInfo[field.title.replace(" ", "_")] = 0;
 					}else if(scope.field.fieldType === 'radio'){
-						$rootScope.patentInfo[field.title.replace(" ", "_")] = scope.field.fieldOptions[0].option_value;
+						$rootScope.patientInfo[field.title.replace(" ", "_")] = scope.field.fieldOptions[0].option_value;
 					}else if(type === 'legal'){
-						$rootScope.patentInfo[field.title.replace(" ", "_")] = 'true';
+						$rootScope.patientInfo[field.title.replace(" ", "_")] = 'true';
 						$rootScope.nextField();
 					}
 				};
@@ -79,24 +79,24 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 				var fieldName = "";
 				fieldName = scope.field.title.replace(" ", "_");
 
-				// $root$rootScope.patentInfo = $rootScope.patentInfo;
-				console.log("patentInfo : ", $rootScope.patentInfo);
+				// $root$rootScope.patientInfo = $rootScope.patientInfo;
+				console.log("patientInfo : ", $rootScope.patientInfo);
 				// $rootScope.name = new Date();
-				if (!$rootScope.patentInfo[fieldName]) {
-					$rootScope.patentInfo[fieldName] = null;
+				if (!$rootScope.patientInfo[fieldName]) {
+					$rootScope.patientInfo[fieldName] = null;
 				}
-				console.log("$rootScope.patentInfo : ", $rootScope.patentInfo);
+				console.log("$rootScope.patientInfo : ", $rootScope.patientInfo);
 				console.log("field name: "+fieldName);
-				console.log("patentInfo[fieldName] : " + $rootScope.patentInfo[fieldName]);
-				// if ($rootScope.patentInfo[fieldName]){
-				// 	$rootScope.patentInfo[field.title.replace(" ", "_")] = $rootScope.patentInfo[fieldName];
-				// 	console.log("$rootScope.patentInfo[field.title.replace(" ", "_")] : " + $rootScope.patentInfo[field.title.replace(" ", "_")]);
+				console.log("patientInfo[fieldName] : " + $rootScope.patientInfo[fieldName]);
+				// if ($rootScope.patientInfo[fieldName]){
+				// 	$rootScope.patientInfo[field.title.replace(" ", "_")] = $rootScope.patientInfo[fieldName];
+				// 	console.log("$rootScope.patientInfo[field.title.replace(" ", "_")] : " + $rootScope.patientInfo[field.title.replace(" ", "_")]);
 				// }
 
 				//Set format only if field is a date
 				if(scope.field.fieldType === 'date'){
 					if (scope.field.chooseDefaultDate){
-						$rootScope.patentInfo[scope.field.title.replace(" ", "_")] = new Date();
+						$rootScope.patientInfo[scope.field.title.replace(" ", "_")] = new Date();
 					}
 					scope.dateOptions = {
 						changeYear: true,

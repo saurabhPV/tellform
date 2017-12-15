@@ -21,7 +21,7 @@
         <div ng-repeat="option in field.fieldOptions" class="row-fluid">
             <label class="btn col-md-4 col-xs-12 col-sm-12 option-text"
                     style="margin: 0.5em; padding-left:30px"
-                    ng-class="{activeBtn: $root.patentInfo[field.title.replace(' ', '_')] == field.fieldOptions[$index].option_value}">
+                    ng-class="{activeBtn: $root.patientInfo[field.title.replace(' ', '_')] == field.fieldOptions[$index].option_value}">
 				<div class="letter">
 					{{$index+1}}
 				</div>
@@ -29,7 +29,7 @@
 				    ng-focus="setActiveField(field._id, null, false)"
                     type="radio" class="focusOn"
 				    value="{{option.option_value}}"
-                    ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
+                    ng-model="$root.patientInfo[field.title.replace(' ', '_')]"
                     ng-model-options="{ debounce: 250 }"
                     ng-required="field.required"
 					ng-change="$root.nextField(field)"/>

@@ -29,7 +29,7 @@
 					class="focusOn"
                     style="opacity: 0; margin-left: 0px;"
                     ng-focus="setActiveField(field._id, null, false)"
-					ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
+					ng-model="$root.patientInfo[field.title.replace(' ', '_')]"
 					ng-model-options="{ debounce: 250 }"
 					ng-required="field.required"
                     ng-change="nextField(field)"/>
@@ -37,7 +37,7 @@
 					{{ 'Y' | translate }}
 				</div>
 				<span>{{ 'YES' | translate }}</span>
-				<i ng-show="$root.patentInfo[field.title.replace(' ', '_')] === 'true'" class="fa fa-check" aria-hidden="true"></i>
+				<i ng-show="$root.patientInfo[field.title.replace(' ', '_')] === 'true'" class="fa fa-check" aria-hidden="true"></i>
             </label>
 	</div>
 
@@ -48,7 +48,7 @@
                 <input type="radio" value="false"
 			        style="opacity:0; margin-left:0px;"
 			        ng-focus="setActiveField(field._id, null, false)"
-			        ng-model="$root.patentInfo[field.title.replace(' ', '_')]"
+			        ng-model="$root.patientInfo[field.title.replace(' ', '_')]"
 			        ng-model-options="{ debounce: 250 }"
 			        ng-required="field.required"
 			        ng-change="nextField(field)"/>
@@ -56,7 +56,7 @@
 				    {{ 'N' | translate }}
 			    </div>
 			    <span>{{ 'NO' | translate }}</span>
-                <i ng-show="$root.patentInfo[field.title.replace(' ', '_')] === 'false'" class="fa fa-check" aria-hidden="true"></i>
+                <i ng-show="$root.patientInfo[field.title.replace(' ', '_')] === 'false'" class="fa fa-check" aria-hidden="true"></i>
             </label>
         </div>
     </div>
