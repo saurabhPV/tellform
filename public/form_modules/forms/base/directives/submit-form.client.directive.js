@@ -22,6 +22,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				var NOSCROLL = false;
 				var FORM_ACTION_ID = 'submit_field';
 				$scope.forms = {};
+				$scope.cordinateList = {front: [], side: []};
 
 				//Don't start timer if we are looking at a design preview
 				if ($scope.ispreview) {
@@ -38,6 +39,93 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					total: form_fields_count,
 					answers_not_completed: form_fields_count - nb_valid
 				};
+
+                // function calculateAspectRatio(element) {
+                //     var $element = $(element);
+                //     return $element.width() / $element.height();
+                // }
+
+                function roundNumber(number){
+                    return Number(number.toFixed(2));
+                }
+
+
+                // $(window).resize(function(){
+                //      console.log($scope.cordinateList);
+                      
+                // 	 var width = $("#pointer_div").width();
+                // 	 var height = $("#pointer_div").height();
+                // 	 var naturalWidth = $('#pointer_div').get(0).naturalWidth;
+                // 	 var naturalHeight = $("#pointer_div").get(0).naturalHeight;
+
+                //      var widthRatio = roundNumber(naturalWidth/width);
+                      
+
+                //      for(var index=0;index < $scope.cordinateList.length; index++){
+                //      	console.log($scope.cordinateList[index]);
+                //         $scope.cordinateList[index].virtual_cordinate.pos_x = roundxNumber($scope.cordinateList[index].real_cordinate.pos_x / widthRatio);
+                //         $scope.cordinateList[index].virtual_cordinate.pos_y = roundNumber($scope.cordinateList[index].real_cordinate.pos_y / widthRatio);
+                //         var style = "position: absolute; top: "+ $scope.cordinateList[index].virtual_cordinate.pos_y +"px; left: "+ $scope.cordinateList[index].virtual_cordinate.pos_x +"px; width: 20px;";
+                //         $("#pointer_"+index).attr('style', style);
+                //      }            
+
+                // });
+
+                $rootScope.setImagePoint = $scope.setImagePoint = function(event){
+                  
+                     var elementId = event.target.id;
+
+                	 var width = $("#"+ elementId).width();
+                	 var height = $("#"+ elementId).height();
+                	 var naturalWidth = $("#"+ elementId).get(0).naturalWidth;
+                	 var naturalHeight = $("#"+ elementId).get(0).naturalHeight;
+                    
+                     var widthRatio = roundNumber(naturalWidth/width);               
+
+                     var offset = $("#"+ elementId).offset();
+
+	                 var pos_x = event.offsetX ? (event.offsetX):event.pageX - offset.left;
+	                 var pos_y = event.offsetY ? (event.offsetY):event.pageY - offset.top;
+	                           
+                     var real_pos_x = roundNumber(pos_x * widthRatio);
+                     var real_pos_y = roundNumber(pos_y * widthRatio);
+
+                     var cordinateDetail = { real_cordinate: {pos_x: real_pos_x,pos_y: real_pos_y}, virtual_cordinate: {pos_x: pos_x,pos_y: pos_y} };
+
+                     if(elementId == 'front_pointer_div'){
+                         $scope.cordinateList.front.push(cordinateDetail);
+                     }
+                     else{
+                         $scope.cordinateList.side.push(cordinateDetail);
+                     }
+                     
+                     var pointer_image_width = 20
+
+                     var style = "position: absolute; top: "+ (pos_y-(pointer_image_width/2)) +"px; left: "+ (pos_x-(pointer_image_width/2)) +"px;";
+                     var img = $('<img />', {   
+                       id: 'pointer_'+ ($scope.cordinateList.front.length - 1),                
+                       src: '/static/modules/core/img/pointer.png',
+                       style: style,
+                       width: pointer_image_width
+                     });
+
+                     $("#"+ elementId).after(img);
+
+
+                     var cordinateListContent = {front: [],side: []};
+
+                     for(var key in $scope.cordinateList){
+
+                        for(var index=0;index < $scope.cordinateList[key].length; index++){                     	                    	
+                     	  cordinateListContent[key].push($scope.cordinateList[key][index].real_cordinate);                     	
+                        }                        
+
+                     }
+               
+                     $("#pain_point").val(JSON.stringify(cordinateListContent));
+                     $("#pain_point").trigger('change'); 
+
+                };
 
 				$scope.reloadForm = function () {
 					//Reset Form
@@ -385,7 +473,6 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 				$rootScope.submitForm = $scope.submitForm = function() {
 
-                    
                     $scope.user = {
                     	"userid": "2341438314014818222782651308423710011616831",
                     	"uploadphoto": "https://s1003demo.s3.ap-south-1.amazonaws.com/profile-380.png?x-amz-acl=public-read&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAI2ORDCDWT5D6PHCA%2F20171214%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20171214T072701Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Signature=97eb8c3622ef35a43393ea584a27b024d3837615287891a0ef1eb8cceb4dac2c"
@@ -476,28 +563,28 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							window.scrollTo(0, 0);
 						}
 
-                        // if(form.signatureUrl){
+                        if(form.signatureUrl){
 
-                        //       var awsFile = AwsDocument.getFile(form.signatureUrl);                            
+                              var awsFile = AwsDocument.getFile(form.signatureUrl);                            
                            
-                        //       AwsDocument.upload(awsFile,$scope.user.uploadphoto,function(result){
+                              AwsDocument.upload(awsFile,$scope.user.uploadphoto,function(result){
 
-                        //         for(var i=0; i < $scope.myform.form_fields.length; i++){
-                        //              if(form.signatureId == form.form_fields[i]._id){
-                        //                  form.form_fields[i].fieldValue = result;
-                        //              }                                      
-                        //         }
+                                for(var i=0; i < $scope.myform.form_fields.length; i++){
+                                     if(form.signatureId == form.form_fields[i]._id){
+                                         form.form_fields[i].fieldValue = result;
+                                     }                                      
+                                }
                                 
-                        //         saveFormDetail(form,formAction,_timeElapsed);
+                                saveFormDetail(form,formAction,_timeElapsed);
                                	
-                        //       },function(){
-                        //           return false;
-                        //       });
+                              },function(){
+                                  return false;
+                              });
 
 
-                        //    }else{
-                        //       saveFormDetail(form,formAction,_timeElapsed);
-                        // }
+                           }else{
+                              saveFormDetail(form,formAction,_timeElapsed);
+                        }
 
 
 					}, 500);
@@ -535,8 +622,6 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 
                 }
-
-
 
 				//Reload our form
 				$scope.reloadForm();
