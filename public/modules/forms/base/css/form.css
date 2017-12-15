@@ -450,3 +450,13 @@ h3.forms-list-title {
         color: white;
         font-size: 16px;
     }
+    #signature-pad{
+        border: 1px solid white !important;
+        width: 100% !important;
+        height: 100px !important;
+        max-height: 220px !important;
+    }
+    .signature_btn{
+        background-color: white;
+        color: #3fa2f7;
+    }

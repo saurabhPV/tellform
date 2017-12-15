@@ -34,7 +34,32 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 						$rootScope.patentData = data;
 
-						// var patient = data.patient
+						var patient = data.patient;
+
+						var patientKeys = Object.keys(patient);
+
+						console.log("patientKeys : ", patientKeys)
+
+						patientKeys.forEach(function(key) {
+							console.log("keys : ",key);
+							console.log("Array.isArray(patient[key]) : ", Array.isArray(patient[key]));
+							if (Array.isArray(patient[key])){
+								switch (key) {
+									case 'emailAddress':
+										$rootScope.patientInfo.email = patient[key][0].email;
+										break;
+
+									case 'phoneNumber':
+										$rootScope.patientInfo.phNumber = patient[key][0].phNumber;
+										break;
+								
+									default:
+										break;
+								}
+							}else{
+								$rootScope.patientInfo[key] = patient[key];
+							}
+						});
 
 						$rootScope.patientInfo.first_name = data.patient.first_name;
 						$rootScope.patientInfo.last_name = data.patient.last_name;
