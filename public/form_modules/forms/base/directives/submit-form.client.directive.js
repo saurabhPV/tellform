@@ -9,8 +9,8 @@ jsep.addBinaryOp('!begins', 10);
 jsep.addBinaryOp('ends', 10);
 jsep.addBinaryOp('!ends', 10);
 
-angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout', 'dataFactory', 'VIEW_FORM_API_URL', '$q', '$location','AwsDocument',
-	function ($http, TimeCounter, $filter, $rootScope, SendVisitorData, $translate, $timeout, dataFactory, VIEW_FORM_API_URL, $q, $location, AwsDocument) {
+angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout', 'dataFactory', 'VIEW_FORM_API_URL', '$location', 'AwsDocument',
+	function ($http, TimeCounter, $filter, $rootScope, SendVisitorData, $translate, $timeout, dataFactory, VIEW_FORM_API_URL, $location, AwsDocument) {
 		return {
 			templateUrl: 'form_modules/forms/base/views/directiveViews/form/submit-form.client.view.html',
 			restrict: 'E',
@@ -20,9 +20,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 			},
 			controller: function ($document, $window, $scope) {
 				if ($location.search().id) {
-					var deferred = $q.defer();
-					dataFactory.get({ pageName: VIEW_FORM_API_URL.urls.GetPatient.replace("{{patientId}}", $location.search().id) }).$promise.then(function (data) {
-						deferred.resolve(data);
+
+					var url = VIEW_FORM_API_URL.apiEndpoint + VIEW_FORM_API_URL.urls.GetPatient.replace("{{patientId}}", $location.search().id);
+
+					dataFactory.get(url, function (data) {
 						console.log("patent data : ", data);
 						if (!$rootScope.patientInfo) {
 							if (localStorage.getItem("patientInfo")) {
@@ -40,10 +41,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 						console.log("patientKeys : ", patientKeys)
 
-						patientKeys.forEach(function(key) {
-							console.log("keys : ",key);
+						patientKeys.forEach(function (key) {
+							console.log("keys : ", key);
 							console.log("Array.isArray(patient[key]) : ", Array.isArray(patient[key]));
-							if (Array.isArray(patient[key])){
+							if (Array.isArray(patient[key])) {
 								switch (key) {
 									case 'emailAddress':
 										$rootScope.patientInfo.email = patient[key][0].email;
@@ -52,11 +53,11 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 									case 'phoneNumber':
 										$rootScope.patientInfo.phNumber = patient[key][0].phNumber;
 										break;
-								
+
 									default:
 										break;
 								}
-							}else{
+							} else {
 								$rootScope.patientInfo[key] = patient[key];
 							}
 						});
@@ -73,9 +74,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						console.log("$rootScope.patientInfo : ", $rootScope.patientInfo);
 
 					}, function (reason) {
-						deferred.reject({ redirectTo: 'unauthorizedFormAccess' });
 						console.log("reason : ", reason);
-					});
+					})
 				}
 				var NOSCROLL = false;
 				var FORM_ACTION_ID = 'submit_field';
@@ -124,16 +124,16 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				var evaluateLogicJump = function (field) {
 					var logicJump = field.logicJump;
 					if (logicJump.enabled) {
-						if (logicJump.expressionString && logicJump.valueB && $rootScope.patientInfo[field.title.replace(" ", "_")]) {
+						if (logicJump.expressionString && logicJump.valueB && $rootScope.patientInfo[field.model]) {
 							var parse_tree = jsep(logicJump.expressionString);
 							var left, right;
 
 							if (parse_tree.left.name === 'field') {
-								left = $rootScope.patientInfo[field.title.replace(" ", "_")];
+								left = $rootScope.patientInfo[field.model];
 								right = logicJump.valueB;
 							} else {
 								left = logicJump.valueB;
-								right = $rootScope.patientInfo[field.title.replace(" ", "_")];
+								right = $rootScope.patientInfo[field.model];
 							}
 
 							if (field.fieldType === 'number' || field.fieldType === 'scale' || field.fieldType === 'rating') {
@@ -353,7 +353,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						if ($scope.selected._id !== FORM_ACTION_ID) {
 							// var currField = $scope.myform.visible_form_fields[$scope.selected.index];
 							var currField = selectedField;
-							var buttonValue = $rootScope.patientInfo[currField.title.replace(" ", "_")];
+							var buttonValue = $rootScope.patientInfo[currField.model];
 							if (buttonValue == "false" && currField.logicJump.action) {
 								$scope.myform.startPage.showStart = true;
 							} else {
@@ -441,23 +441,23 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				};
 
 
-				$rootScope.submitForm = $scope.submitForm = function() {
+				$rootScope.submitForm = $scope.submitForm = function () {
 
-                    
-                    // $scope.user = {
-                    // 	"userid": "2341438314014818222782651308423710011616831",
-                    // 	"uploadphoto": "https://s1003demo.s3.ap-south-1.amazonaws.com/profile-380.png?x-amz-acl=public-read&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAI2ORDCDWT5D6PHCA%2F20171214%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20171214T072701Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Signature=97eb8c3622ef35a43393ea584a27b024d3837615287891a0ef1eb8cceb4dac2c"
-                    // }                                        
- 
-                    console.log($scope.forms);
-                    console.log($scope.myform);
-					if($scope.forms.myForm.$invalid){
+
+					// $scope.user = {
+					// 	"userid": "2341438314014818222782651308423710011616831",
+					// 	"uploadphoto": "https://s1003demo.s3.ap-south-1.amazonaws.com/profile-380.png?x-amz-acl=public-read&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAI2ORDCDWT5D6PHCA%2F20171214%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20171214T072701Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Signature=97eb8c3622ef35a43393ea584a27b024d3837615287891a0ef1eb8cceb4dac2c"
+					// }                                        
+
+					console.log($scope.forms);
+					console.log($scope.myform);
+					if ($scope.forms.myForm.$invalid) {
 						$scope.goToInvalid();
 						return;
 					}
 
-                  //  return false;
-					var formAction="";
+					//  return false;
+					var formAction = "";
 
 					var _timeElapsed = TimeCounter.stopClock();
 					$scope.loading = true;
@@ -497,21 +497,34 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						}
 					}
 					console.log("patent info : ", $rootScope.patientInfo);
-                    form.signatureUrl = '';
+					form.signatureUrl = '';
+					var data = {};
+					data.ID = $location.search().id;
 
 					for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {
-							$rootScope.patientInfo[$scope.myform.form_fields[i].title.replace(" ", "_")] = $rootScope.patientInfo[$scope.myform.form_fields[i].title.replace(" ", "_")].option_value;
+							$rootScope.patientInfo[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model].option_value;
+							data[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+						} else if (form.form_fields[i].fieldType == 'signature') {
+							form.signatureUrl = form.form_fields[i].fieldValue;
+							form.signatureId = form.form_fields[i]._id;
 						}
-						// var fieldName="";
-						// fieldName = $scope.myform.form_fields[i].title;
-						// console.log("field name : " + fieldName.replace(" ", "_"));
-						// $rootScope.patientInfo[fieldName.replace(" ", "_")] = $scope.myform.form_fields[i].fieldValue
 
-                        if(form.form_fields[i].fieldType == 'signature'){
-                        	form.signatureUrl = form.form_fields[i].fieldValue;
-                        	form.signatureId = form.form_fields[i]._id;
-                        }
+						if (form.form_fields[i].fieldType != 'signature') {
+							if (form.form_fields[i].parent) {
+								if (form.form_fields[i].parent == "keyValuePair") {
+									if (!data[form.form_fields[i].parent]) {
+										data[form.form_fields[i].parent] = [];
+									}
+									data[form.form_fields[i].parent].push({
+										'key': form.form_fields[i].model,
+										'value': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+									})
+								}
+							} else {
+								data[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+							}
+						}
 
 
 						//Get rid of unnessecary attributes for each form field
@@ -534,65 +547,78 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							window.scrollTo(0, 0);
 						}
 
-                        if(form.signatureUrl){
+						if (form.signatureUrl) {
 
-                              var awsFile = AwsDocument.getFile(form.signatureUrl);                            
-                           
-							  AwsDocument.upload(awsFile, $rootScope.patentData.uploadphoto,function(result){
+							var awsFile = AwsDocument.getFile(form.signatureUrl);
 
-                                for(var i=0; i < $scope.myform.form_fields.length; i++){
-                                     if(form.signatureId == form.form_fields[i]._id){
-                                         form.form_fields[i].fieldValue = result;
-                                     }                                      
-                                }
-                                
-                                saveFormDetail(form,formAction,_timeElapsed);
-                               	
-                              },function(){
-                                  return false;
-                              });
+							AwsDocument.upload(awsFile, $rootScope.patentData.uploadphoto, function (result) {
+
+								for (var i = 0; i < $scope.myform.form_fields.length; i++) {
+									if (form.signatureId == form.form_fields[i]._id) {
+										$rootScope.patientInfo[form.form_fields[i].model] = result;
+										data[form.form_fields[i].model] = result
+									}
+								}
+								updatePatientData(data);
+								saveFormDetail(form, formAction, _timeElapsed);
+
+							}, function () {
+								updatePatientData(data);
+								return false;
+							});
 
 
-                           }else{
-                              saveFormDetail(form,formAction,_timeElapsed);
-                        }
+						} else {
+							updatePatientData(data);
+							saveFormDetail(form, formAction, _timeElapsed);
+						}
 
 
 					}, 500);
 				};
 
+				var saveFormDetail = function (form, formAction, _timeElapsed) {
+
+					$scope.submitPromise = $http.post('/forms/' + $scope.myform._id, form)
+						.success(function (data, status) {
+							$scope.myform.submitted = true;
+							$scope.loading = false;
+							SendVisitorData.send(form, getActiveField(), _timeElapsed);
+							if (formAction) {
+								window.location.href = "http://" + window.location.hostname + "/" + formAction;
+							}
+						})
+						.error(function (error) {
+							$scope.loading = false;
+							console.error(error);
+							$scope.error = error.message;
+							if (formAction) {
+								window.location = "http://" + window.location.hostname + ":8887/" + formAction;
+								setTimeout(function () {
+									console.log("time to reload");
+									//$scope.reloadForm();									 
+									//$location.path(formAction);
+									//$scope.fadeIn();
+									//window.location.reload();
+									$window.animate(window.scrollTo(0, 0));
+								}, 100);
+							}
+						});
 
 
-                var saveFormDetail = function(form,formAction,_timeElapsed){
+				}
 
-						$scope.submitPromise = $http.post('/forms/' + $scope.myform._id, form)
-							.success(function (data, status) {
-								$scope.myform.submitted = true;
-								$scope.loading = false;
-								SendVisitorData.send(form, getActiveField(), _timeElapsed);
-								if(formAction){
-									window.location.href="http://"+window.location.hostname+"/"+formAction;
-								}
-							})
-							.error(function (error) {
-								$scope.loading = false;
-								console.error(error);
-								$scope.error = error.message;
-								if(formAction){
-									window.location="http://"+window.location.hostname+":8887/"+formAction;
-									setTimeout (function(){
-										 console.log("time to reload");
-										 //$scope.reloadForm();									 
-										 //$location.path(formAction);
-										 //$scope.fadeIn();
-										 //window.location.reload();
-										 $window.animate(window.scrollTo(0, 0));
-										},100);
-								}							
-							});
+				var updatePatientData = function (data) {
+					console.log("data : ", data);
 
+					var url = VIEW_FORM_API_URL.apiEndpoint + VIEW_FORM_API_URL.urls.UpdatePatient;
 
-                }
+					dataFactory.put(data, url, function (data) {
+						console.log("data : ", data);
+					}, function (reason) {
+						console.log("reason : ", reason);
+					})
+				}
 
 
 

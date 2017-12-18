@@ -62,13 +62,13 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 
 				$rootScope.chooseDefaultOption = scope.chooseDefaultOption = function(type) {
 					if(type === 'yes_no'){
-						$rootScope.patientInfo[field.title.replace(" ", "_")] = 'true';
+						$rootScope.patientInfo[field.model] = 'true';
 					}else if(type === 'rating'){
-						$rootScope.patientInfo[field.title.replace(" ", "_")] = 0;
+						$rootScope.patientInfo[field.model] = 0;
 					}else if(scope.field.fieldType === 'radio'){
-						$rootScope.patientInfo[field.title.replace(" ", "_")] = scope.field.fieldOptions[0].option_value;
+						$rootScope.patientInfo[field.model] = scope.field.fieldOptions[0].option_value;
 					}else if(type === 'legal'){
-						$rootScope.patientInfo[field.title.replace(" ", "_")] = 'true';
+						$rootScope.patientInfo[field.model] = 'true';
 						$rootScope.nextField();
 					}
 				};
@@ -77,7 +77,7 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 				scope.setActiveField = $rootScope.setActiveField;
 
 				var fieldName = "";
-				fieldName = scope.field.title.replace(" ", "_");
+				fieldName = scope.field.model;
 
 				// $root$rootScope.patientInfo = $rootScope.patientInfo;
 				console.log("patientInfo : ", $rootScope.patientInfo);
@@ -89,14 +89,14 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 				console.log("field name: "+fieldName);
 				console.log("patientInfo[fieldName] : " + $rootScope.patientInfo[fieldName]);
 				// if ($rootScope.patientInfo[fieldName]){
-				// 	$rootScope.patientInfo[field.title.replace(" ", "_")] = $rootScope.patientInfo[fieldName];
-				// 	console.log("$rootScope.patientInfo[field.title.replace(" ", "_")] : " + $rootScope.patientInfo[field.title.replace(" ", "_")]);
+				// 	$rootScope.patientInfo[field.model] = $rootScope.patientInfo[fieldName];
+				// 	console.log("$rootScope.patientInfo[field.model] : " + $rootScope.patientInfo[field.model]);
 				// }
 
 				//Set format only if field is a date
 				if(scope.field.fieldType === 'date'){
 					if (scope.field.chooseDefaultDate){
-						$rootScope.patientInfo[scope.field.title.replace(" ", "_")] = new Date();
+						$rootScope.patientInfo[scope.field.model] = new Date();
 					}
 					scope.dateOptions = {
 						changeYear: true,
