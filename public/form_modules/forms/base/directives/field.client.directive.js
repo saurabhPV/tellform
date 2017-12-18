@@ -28,7 +28,8 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 				'yes_no',
 				'number',
 				'natural',
-				'signature'
+				'signature',
+				'pain_point'
 			];
 
 			var templateUrl = 'form_modules/forms/base/views/directiveViews/field/';

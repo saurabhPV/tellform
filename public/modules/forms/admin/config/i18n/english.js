@@ -159,6 +159,7 @@ angular.module('forms').config(['$translateProvider', function ($translateProvid
 	    RATING: 'Rating',
 	    NUMBERS: 'Numbers',
 	    SIGNATURE: 'Signature',
+	    PAIN_POINT: 'Pain Point',
 	    FILE_UPLOAD: 'File upload',
 	    OPTION_SCALE: 'Option Scale',
 	    PAYMENT: 'Payment',
