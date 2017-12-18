@@ -61,7 +61,7 @@ angular.module('view-form').service('dataFactory',
                 crossDomain: true,
                 url: url,
                 method: 'PUT',
-                headers: {
+                'headers': {
                     'content-type': 'application/json'
                 },
                 processData: false,

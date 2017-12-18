@@ -20,8 +20,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 			},
 			controller: function ($document, $window, $scope) {
 				if ($location.search().id) {
-
-					var url = VIEW_FORM_API_URL.apiEndpoint + VIEW_FORM_API_URL.urls.GetPatient.replace("{{patientId}}", $location.search().id);
+					$rootScope.patientId = $location.search().id;
+				}
+				if ($rootScope.patientId) {
+					var url = VIEW_FORM_API_URL.apiEndpoint + VIEW_FORM_API_URL.urls.GetPatient.replace("{{patientId}}", $rootScope.patientId);
 
 					dataFactory.get(url, function (data) {
 						console.log("patent data : ", data);
@@ -35,7 +37,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 						$rootScope.patentData = data;
 
-						var patient = data.patient;
+						var patient = data.Patient;
 
 						var patientKeys = Object.keys(patient);
 
@@ -47,11 +49,17 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							if (Array.isArray(patient[key])) {
 								switch (key) {
 									case 'emailAddress':
-										$rootScope.patientInfo.email = patient[key][0].email;
+										$rootScope.patientInfo.EmailAddress = patient[key][0].Email;
 										break;
 
 									case 'phoneNumber':
-										$rootScope.patientInfo.phNumber = patient[key][0].phNumber;
+										for (var i = 0; i < patient[key].length; i++) {
+											$rootScope.patientInfo[patient[key][i].PHType] = patient[key][i].PHNumber;
+										}
+										break;
+
+									case 'Address':
+										$rootScope.patientInfo.Address = patient[key][0].AddressLine1;
 										break;
 
 									default:
@@ -61,6 +69,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 								$rootScope.patientInfo[key] = patient[key];
 							}
 						});
+
+						console.log("$rootScope.patientInfo after getting data : ", $rootScope.patientInfo);
 
 						$rootScope.patientInfo.first_name = data.patient.first_name;
 						$rootScope.patientInfo.last_name = data.patient.last_name;
@@ -80,7 +90,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				var NOSCROLL = false;
 				var FORM_ACTION_ID = 'submit_field';
 				$scope.forms = {};
-				$scope.cordinateList = {front: [], side: []};
+				$scope.cordinateList = { front: [], side: [] };
 
 				//Don't start timer if we are looking at a design preview
 				if ($scope.ispreview) {
@@ -98,92 +108,92 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					answers_not_completed: form_fields_count - nb_valid
 				};
 
-                // function calculateAspectRatio(element) {
-                //     var $element = $(element);
-                //     return $element.width() / $element.height();
-                // }
+				// function calculateAspectRatio(element) {
+				//     var $element = $(element);
+				//     return $element.width() / $element.height();
+				// }
 
-                function roundNumber(number){
-                    return Number(number.toFixed(2));
-                }
-
-
-                // $(window).resize(function(){
-                //      console.log($scope.cordinateList);
-                      
-                // 	 var width = $("#pointer_div").width();
-                // 	 var height = $("#pointer_div").height();
-                // 	 var naturalWidth = $('#pointer_div').get(0).naturalWidth;
-                // 	 var naturalHeight = $("#pointer_div").get(0).naturalHeight;
-
-                //      var widthRatio = roundNumber(naturalWidth/width);
-                      
-
-                //      for(var index=0;index < $scope.cordinateList.length; index++){
-                //      	console.log($scope.cordinateList[index]);
-                //         $scope.cordinateList[index].virtual_cordinate.pos_x = roundxNumber($scope.cordinateList[index].real_cordinate.pos_x / widthRatio);
-                //         $scope.cordinateList[index].virtual_cordinate.pos_y = roundNumber($scope.cordinateList[index].real_cordinate.pos_y / widthRatio);
-                //         var style = "position: absolute; top: "+ $scope.cordinateList[index].virtual_cordinate.pos_y +"px; left: "+ $scope.cordinateList[index].virtual_cordinate.pos_x +"px; width: 20px;";
-                //         $("#pointer_"+index).attr('style', style);
-                //      }            
-
-                // });
-
-                $rootScope.setImagePoint = $scope.setImagePoint = function(event){
-                  
-                     var elementId = event.target.id;
-
-                	 var width = $("#"+ elementId).width();
-                	 var height = $("#"+ elementId).height();
-                	 var naturalWidth = $("#"+ elementId).get(0).naturalWidth;
-                	 var naturalHeight = $("#"+ elementId).get(0).naturalHeight;
-                    
-                     var widthRatio = roundNumber(naturalWidth/width);               
-
-                     var offset = $("#"+ elementId).offset();
-
-	                 var pos_x = event.offsetX ? (event.offsetX):event.pageX - offset.left;
-	                 var pos_y = event.offsetY ? (event.offsetY):event.pageY - offset.top;
-	                           
-                     var real_pos_x = roundNumber(pos_x * widthRatio);
-                     var real_pos_y = roundNumber(pos_y * widthRatio);
-
-                     var cordinateDetail = { real_cordinate: {pos_x: real_pos_x,pos_y: real_pos_y}, virtual_cordinate: {pos_x: pos_x,pos_y: pos_y} };
-
-                     if(elementId == 'front_pointer_div'){
-                         $scope.cordinateList.front.push(cordinateDetail);
-                     }
-                     else{
-                         $scope.cordinateList.side.push(cordinateDetail);
-                     }
-                     
-                     var pointer_image_width = 20
-
-                     var style = "position: absolute; top: "+ (pos_y-(pointer_image_width/2)) +"px; left: "+ (pos_x-(pointer_image_width/2)) +"px;";
-                     var img = $('<img />', {   
-                       id: 'pointer_'+ ($scope.cordinateList.front.length - 1),                
-                       src: '/static/modules/core/img/pointer.png',
-                       style: style,
-                       width: pointer_image_width
-                     });
-
-                     $("#"+ elementId).after(img);
+				function roundNumber(number) {
+					return Number(number.toFixed(2));
+				}
 
 
-                     var cordinateListContent = {front: [],side: []};
+				// $(window).resize(function(){
+				//      console.log($scope.cordinateList);
 
-                     for(var key in $scope.cordinateList){
+				// 	 var width = $("#pointer_div").width();
+				// 	 var height = $("#pointer_div").height();
+				// 	 var naturalWidth = $('#pointer_div').get(0).naturalWidth;
+				// 	 var naturalHeight = $("#pointer_div").get(0).naturalHeight;
 
-                        for(var index=0;index < $scope.cordinateList[key].length; index++){                     	                    	
-                     	  cordinateListContent[key].push($scope.cordinateList[key][index].real_cordinate);                     	
-                        }                        
+				//      var widthRatio = roundNumber(naturalWidth/width);
 
-                     }
-               
-                     $("#pain_point").val(JSON.stringify(cordinateListContent));
-                     $("#pain_point").trigger('change'); 
 
-                };
+				//      for(var index=0;index < $scope.cordinateList.length; index++){
+				//      	console.log($scope.cordinateList[index]);
+				//         $scope.cordinateList[index].virtual_cordinate.pos_x = roundxNumber($scope.cordinateList[index].real_cordinate.pos_x / widthRatio);
+				//         $scope.cordinateList[index].virtual_cordinate.pos_y = roundNumber($scope.cordinateList[index].real_cordinate.pos_y / widthRatio);
+				//         var style = "position: absolute; top: "+ $scope.cordinateList[index].virtual_cordinate.pos_y +"px; left: "+ $scope.cordinateList[index].virtual_cordinate.pos_x +"px; width: 20px;";
+				//         $("#pointer_"+index).attr('style', style);
+				//      }            
+
+				// });
+
+				$rootScope.setImagePoint = $scope.setImagePoint = function (event) {
+
+					var elementId = event.target.id;
+
+					var width = $("#" + elementId).width();
+					var height = $("#" + elementId).height();
+					var naturalWidth = $("#" + elementId).get(0).naturalWidth;
+					var naturalHeight = $("#" + elementId).get(0).naturalHeight;
+
+					var widthRatio = roundNumber(naturalWidth / width);
+
+					var offset = $("#" + elementId).offset();
+
+					var pos_x = event.offsetX ? (event.offsetX) : event.pageX - offset.left;
+					var pos_y = event.offsetY ? (event.offsetY) : event.pageY - offset.top;
+
+					var real_pos_x = roundNumber(pos_x * widthRatio);
+					var real_pos_y = roundNumber(pos_y * widthRatio);
+
+					var cordinateDetail = { real_cordinate: { pos_x: real_pos_x, pos_y: real_pos_y }, virtual_cordinate: { pos_x: pos_x, pos_y: pos_y } };
+
+					if (elementId == 'front_pointer_div') {
+						$scope.cordinateList.front.push(cordinateDetail);
+					}
+					else {
+						$scope.cordinateList.side.push(cordinateDetail);
+					}
+
+					var pointer_image_width = 20
+
+					var style = "position: absolute; top: " + (pos_y - (pointer_image_width / 2)) + "px; left: " + (pos_x - (pointer_image_width / 2)) + "px;";
+					var img = $('<img />', {
+						id: 'pointer_' + ($scope.cordinateList.front.length - 1),
+						src: '/static/modules/core/img/pointer.png',
+						style: style,
+						width: pointer_image_width
+					});
+
+					$("#" + elementId).after(img);
+
+
+					var cordinateListContent = { front: [], side: [] };
+
+					for (var key in $scope.cordinateList) {
+
+						for (var index = 0; index < $scope.cordinateList[key].length; index++) {
+							cordinateListContent[key].push($scope.cordinateList[key][index].real_cordinate);
+						}
+
+					}
+
+					$("#pain_point").val(JSON.stringify(cordinateListContent));
+					$("#pain_point").trigger('change');
+
+				};
 
 				$scope.reloadForm = function () {
 					//Reset Form
@@ -529,11 +539,11 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				};
 
 
-				$rootScope.submitForm = $scope.submitForm = function() {
- 
-                    console.log($scope.forms);
-                    console.log($scope.myform);
-					if($scope.forms.myForm.$invalid){
+				$rootScope.submitForm = $scope.submitForm = function () {
+
+					console.log($scope.forms);
+					console.log($scope.myform);
+					if ($scope.forms.myForm.$invalid) {
 						$scope.goToInvalid();
 						return;
 					}
@@ -581,7 +591,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					console.log("patent info : ", $rootScope.patientInfo);
 					form.signatureUrl = '';
 					var data = {};
-					data.ID = $location.search().id;
+					data.ID = $rootScope.patientId;
 
 					for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {
@@ -602,8 +612,48 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										'Key': $scope.myform.form_fields[i].model,
 										'Value': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
 									})
+								} else if ($scope.myform.form_fields[i].parent == "PhoneNumber") {
+									if (data[$scope.myform.form_fields[i].parent] && data[$scope.myform.form_fields[i].parent].length != 0) {
+										data[$scope.myform.form_fields[i].parent].push({
+											'PHType': $scope.myform.form_fields[i].model,
+											'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+										})
+									} else {
+										data[$scope.myform.form_fields[i].parent] = [];
+										data[$scope.myform.form_fields[i].parent].push({
+											'PHType': $scope.myform.form_fields[i].model,
+											'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+										})
+									}
+
+								} else if ($scope.myform.form_fields[i].parent == "Address") {
+									if (data[$scope.myform.form_fields[i].parent] && data[$scope.myform.form_fields[i].parent].length != 0) {
+										data[$scope.myform.form_fields[i].parent].push({
+											'AddressLine1': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+										})
+									} else {
+										data[$scope.myform.form_fields[i].parent] = [];
+										data[$scope.myform.form_fields[i].parent].push({
+											'AddressLine1': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+										})
+									}
+
+								} else if ($scope.myform.form_fields[i].parent == "EmailAddress") {
+									if (data[$scope.myform.form_fields[i].parent] && data[$scope.myform.form_fields[i].parent].length != 0) {
+										data[$scope.myform.form_fields[i].parent].push({
+											'Email': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+										})
+									} else {
+										data[$scope.myform.form_fields[i].parent] = [];
+										data[$scope.myform.form_fields[i].parent].push({
+											'Email': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+										})
+									}
+
 								}
 							} else {
+								console.log("$scope.myform.form_fields[i].model : ", $scope.myform.form_fields[i].model)
+								console.log("$rootScope.patientInfo[$scope.myform.form_fields[i].model] : ", $rootScope.patientInfo[$scope.myform.form_fields[i].model])
 								data[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model]
 							}
 						}
