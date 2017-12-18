@@ -587,20 +587,20 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {
 							$rootScope.patientInfo[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model].option_value;
 							data[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model]
-						} else if (form.form_fields[i].fieldType == 'signature') {
+						} else if ($scope.myform.form_fields[i].model == 'signature') {
 							form.signatureUrl = form.form_fields[i].fieldValue;
 							form.signatureId = form.form_fields[i]._id;
 						}
 
-						if (form.form_fields[i].fieldType != 'signature') {
-							if (form.form_fields[i].parent) {
-								if (form.form_fields[i].parent == "keyValuePair") {
-									if (!data[form.form_fields[i].parent]) {
-										data[form.form_fields[i].parent] = [];
+						if ($scope.myform.form_fields[i].model != 'signature') {
+							if ($scope.myform.form_fields[i].parent) {
+								if ($scope.myform.form_fields[i].parent == "KeyValuePair") {
+									if (!data[$scope.myform.form_fields[i].parent]) {
+										data[$scope.myform.form_fields[i].parent] = [];
 									}
-									data[form.form_fields[i].parent].push({
-										'key': form.form_fields[i].model,
-										'value': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+									data[$scope.myform.form_fields[i].parent].push({
+										'Key': $scope.myform.form_fields[i].model,
+										'Value': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
 									})
 								}
 							} else {
@@ -638,7 +638,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 								for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 									if (form.signatureId == form.form_fields[i]._id) {
 										$rootScope.patientInfo[form.form_fields[i].model] = result;
-										data[form.form_fields[i].model] = result
+										data[$scope.myform.form_fields[i].parent].push({
+											'Key': form.form_fields[i].model,
+											'Value': $rootScope.patientInfo[form.form_fields[i].model]
+										})
 									}
 								}
 								updatePatientData(data);
