@@ -36,7 +36,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							}
 						}
 
-						$rootScope.patentData = data;
+						$rootScope.patientData = data;
 
 						var patient = data.Patient;
 
@@ -49,38 +49,41 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							console.log("Array.isArray(patient[key]) : ", Array.isArray(patient[key]));
 							if (Array.isArray(patient[key])) {
 								switch (key) {
-									case 'emailAddress':
+									case 'EmailAddress':
 										$rootScope.patientInfo.EmailAddress = patient[key][0].Email;
 										break;
 
-									case 'phoneNumber':
-										for (var i = 0; i < patient[key].length; i++) {
-											$rootScope.patientInfo[patient[key][i].PHType] = patient[key][i].PHNumber;
-										}
+									case 'PhoneNumber':
+										patient[key].forEach(function (element) {
+											console.log("element : ", element);
+											$rootScope.patientInfo[element.PHType] = element.PHNumber;
+										}, this);
 										break;
 
 									case 'Address':
 										$rootScope.patientInfo.Address = patient[key][0].AddressLine1;
 										break;
 
+									case 'KeyValuePair':
+										console.log("KeyValuePair");
+										patient[key].forEach(function(element) {
+											console.log("element : ",element);
+											$rootScope.patientInfo[element.Key] = element.Value;
+										}, this);
+										break;
+
 									default:
 										break;
 								}
 							} else {
+								// console.log("key : ", key);
+								// console.log("$rootScope.patientInfo[key] : ", $rootScope.patientInfo[key]);
+								// console.log("patient[key] : ", patient[key]);
 								$rootScope.patientInfo[key] = patient[key];
 							}
 						});
 
 						console.log("$rootScope.patientInfo after getting data : ", $rootScope.patientInfo);
-
-						$rootScope.patientInfo.first_name = data.patient.first_name;
-						$rootScope.patientInfo.last_name = data.patient.last_name;
-						$rootScope.patientInfo.email = _.filter(data.patient.emailAddress, function (field) {
-							return (field.isPrimary === true);
-						})[0].email;
-						$rootScope.patientInfo.phNumber = _.filter(data.patient.phoneNumber, function (field) {
-							return (field.isPrimary === true);
-						})[0].phNumber;
 
 						console.log("$rootScope.patientInfo : ", $rootScope.patientInfo);
 
@@ -616,16 +619,47 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										'Value': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
 									})
 								} else if ($scope.myform.form_fields[i].parent == "PhoneNumber") {
-									if (data[$scope.myform.form_fields[i].parent] && data[$scope.myform.form_fields[i].parent].length != 0) {
-										data[$scope.myform.form_fields[i].parent].push({
-											'PHType': $scope.myform.form_fields[i].model,
-											'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
-										})
-									} else {
+									// console.log("$scope.myform.form_fields[i].parent : ", $scope.myform.form_fields[i].parent);
+									// console.log("$rootScope.patientData : ", $rootScope.patientData);
+									// console.log("$rootScope.patientData.Patient[$scope.myform.form_fields[i].parent] : ", $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent]);
+									// console.log("$rootScope.patientData.Patient[$scope.myform.form_fields[i].parent] : ", $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent]);
+
+									if ($rootScope.patientData.Patient[$scope.myform.form_fields[i].parent] && $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent] != 0){
+										data[$scope.myform.form_fields[i].parent] = $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent];
+									}else{
 										data[$scope.myform.form_fields[i].parent] = [];
+									}
+
+									console.log("data[$scope.myform.form_fields[i].parent] : ", data[$scope.myform.form_fields[i].parent]);
+
+									if (data[$scope.myform.form_fields[i].parent] != 0) {
+										var phoneNumber = null;
+										phoneNumber = _.filter(data[$scope.myform.form_fields[i].parent], function (phone) {
+											return (phone.PHType == $scope.myform.form_fields[i].model);
+										});
+										console.log("filter phone number : ", phoneNumber);
+										if (phoneNumber.length != 0){
+											for (var j = 0; j < data[$scope.myform.form_fields[i].parent].length; j++){
+												if (data[$scope.myform.form_fields[i].parent][j].PHType == $scope.myform.form_fields[i].model){
+													data[$scope.myform.form_fields[i].parent][j] = {
+														'PHType': $scope.myform.form_fields[i].model,
+														'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model],
+														'Region': '+91'
+													}
+												}
+											}
+										}else{
+											data[$scope.myform.form_fields[i].parent].push({
+												'PHType': $scope.myform.form_fields[i].model,
+												'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model],
+												'Region': '+91'
+											})
+										}
+									} else {
 										data[$scope.myform.form_fields[i].parent].push({
 											'PHType': $scope.myform.form_fields[i].model,
-											'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+											'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model],
+											'Region': '+91'
 										})
 									}
 
@@ -684,8 +718,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						if (form.signatureUrl) {
 
 							var awsFile = AwsDocument.getFile(form.signatureUrl);
-               
-							AwsDocument.upload(awsFile, $rootScope.patentData.uploadphoto, function (result) {
+
+							AwsDocument.upload(awsFile, $rootScope.patientData.uploadphoto, function (result) {
 
 								for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 									if (form.signatureId == form.form_fields[i]._id) {
