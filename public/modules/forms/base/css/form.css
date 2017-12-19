@@ -452,19 +452,13 @@ h3.forms-list-title {
     }
     #signature-pad{
         border: 1px solid white !important;
-        width: 335px !important;
-        height: 186px !important;
-        max-height: 186px !important;
     }
+
     .signature_btn{
         background-color: white;
         color: #3fa2f7;
     }
-    @media(min-width:1024px){
-        .signature canvas{
-            max-width:400px;
-        }
-    }
+
     .ui-widget-header{
     border-bottom:1px solid #3fa2f7 !important;
     color:#444444 !important;

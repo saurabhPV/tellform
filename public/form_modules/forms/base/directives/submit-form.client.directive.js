@@ -618,17 +618,21 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
                         if(form.signatureUrl){
 
-                              var awsFile = AwsDocument.getFile(form.signatureUrl);                            
+                              var awsFile = AwsDocument.getFile(form.signatureUrl);      
+
+                              var uploadUrl = "https://nshealth.s3.ap-south-1.amazonaws.com/233/privacy_policy/Signature?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAIFOQTB3CZB5VBUAQ%2F20171218%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20171218T090737Z&X-Amz-Expires=300&X-Amz-Security-Token=FQoDYXdzEKL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDJAz143AZGdobqwlCCLlAca6JTDidKSnKnzNnF6TfpMa87AqOY3MOB%2Fvbj4amsbp1dEhiucY2%2Bbtz0bRhpl%2F9Z2KLGaHeiRPislasKav72YIxdEkLWOL0%2BC%2FKcVgU%2BqxyCYUboJF9ruz%2BLmDWUBb5KtvDMg2X97Zjz6K7HDvXDcMJBuS%2BMkfW8qpj2BebLBfFcof3Old5lT1NDOhAeROxSCVxic0IXSr6ASFgOZwEcRrCTE7tRtxH%2F9Hl31l2kLJisZ%2FuZ1ay85lHYeDwnfcUbJUVYWW81OtIMUuI7D8zSPDPdYEvk9GPuL9el6cJRtYI2%2BVV1Iovofe0QU%3D&X-Amz-Signature=94e46582d3396c76623c40e575d5042763a9bd929ab759b8bb3c11eee8917539&X-Amz-SignedHeaders=host";
+
+//$rootScope.patentData.uploadphoto
                            
-							  AwsDocument.upload(awsFile, $rootScope.patentData.uploadphoto,function(result){
+							  AwsDocument.upload(awsFile, uploadUrl ,function(result){
 
                                 for(var i=0; i < $scope.myform.form_fields.length; i++){
                                      if(form.signatureId == form.form_fields[i]._id){
                                          form.form_fields[i].fieldValue = result;
                                      }                                      
                                 }
-                                
-                                saveFormDetail(form,formAction,_timeElapsed);
+                                return false;
+                               // saveFormDetail(form,formAction,_timeElapsed);
                                	
                               },function(){
                                   return false;
