@@ -357,6 +357,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 				$scope.$watch('selected.index', function (oldValue, newValue) {
 					if (oldValue !== newValue && newValue < $scope.myform.form_fields.length) {
+
 						//Only send analytics data if form has not been submitted
 						if (!$scope.myform.submitted) {
 							console.log('SendVisitorData.send()');
@@ -697,7 +698,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 								}
 								updatePatientData(data, formAction);
 							}, function () {
-								return false;
+								updatePatientData(data, formAction);
 							});
 
 
