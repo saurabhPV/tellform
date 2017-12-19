@@ -173,7 +173,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					var style = "position: absolute; top: " + (pos_y - (pointer_image_width / 2)) + "px; left: " + (pos_x - (pointer_image_width / 2)) + "px;";
 					var img = $('<img />', {
 						id: 'pointer_' + ($scope.cordinateList.front.length - 1),
-						src: '/static/modules/core/img/pointer.png',
+						src: '/static/modules/core/img/pointt.png',
 						style: style,
 						width: pointer_image_width
 					});
