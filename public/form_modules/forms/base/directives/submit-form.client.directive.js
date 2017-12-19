@@ -19,6 +19,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				ispreview: '='
 			},
 			controller: function ($document, $window, $scope) {
+				$scope.currentPageUrl = window.location.href;
 				if ($location.search().id) {
 					$rootScope.patientId = $location.search().id;
 				}
@@ -170,12 +171,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						$scope.cordinateList.side.push(cordinateDetail);
 					}
 
-					var pointer_image_width = 20
+					var pointer_image_width = 13
 
 					var style = "position: absolute; top: " + (pos_y - (pointer_image_width / 2)) + "px; left: " + (pos_x - (pointer_image_width / 2)) + "px;";
 					var img = $('<img />', {
 						id: 'pointer_' + ($scope.cordinateList.front.length - 1),
-						src: '/static/modules/core/img/pointer.png',
+						src: '/static/modules/core/img/pointt.png',
 						style: style,
 						width: pointer_image_width
 					});
@@ -452,8 +453,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				$rootScope.nextField = $scope.nextField = function (selectedField) {
 					if ($scope.selected && $scope.selected.index > -1) {
 						if ($scope.selected._id !== FORM_ACTION_ID) {
-							// var currField = $scope.myform.visible_form_fields[$scope.selected.index];
-							var currField = selectedField;
+							var currField = $scope.myform.visible_form_fields[$scope.selected.index];
+							//var currField = selectedField;
 							var buttonValue = $rootScope.patientInfo[currField.model];
 							if (buttonValue == "false" && currField.logicJump.action) {
 								$scope.myform.startPage.showStart = true;
@@ -543,9 +544,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 
 				$rootScope.submitForm = $scope.submitForm = function () {
-
+                   
 					console.log($scope.forms);
 					console.log($scope.myform);
+
 					if ($scope.forms.myForm.$invalid) {
 						$scope.goToInvalid();
 						return;
@@ -600,12 +602,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {
 							$rootScope.patientInfo[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model].option_value;
 							data[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model]
-						} else if ($scope.myform.form_fields[i].model == 'signature') {
+						} else if ($scope.myform.form_fields[i].fieldType == 'signature') {
 							form.signatureUrl = form.form_fields[i].fieldValue;
 							form.signatureId = form.form_fields[i]._id;
 						}
 
-						if ($scope.myform.form_fields[i].model != 'signature') {
+						if ($scope.myform.form_fields[i].fieldType != 'signature') {
 							if ($scope.myform.form_fields[i].parent) {
 								if ($scope.myform.form_fields[i].parent == "KeyValuePair") {
 									if (!data[$scope.myform.form_fields[i].parent]) {
@@ -712,7 +714,6 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							window.location = formAction;
 							window.scrollTo(0, 0);
 						}
-
 						if (form.signatureUrl) {
 
 							var awsFile = AwsDocument.getFile(form.signatureUrl);
@@ -728,18 +729,14 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										})
 									}
 								}
-								updatePatientData(data);
-								saveFormDetail(form, formAction, _timeElapsed);
-
+								updatePatientData(data, formAction);
 							}, function () {
-								updatePatientData(data);
 								return false;
 							});
 
 
 						} else {
-							updatePatientData(data);
-							saveFormDetail(form, formAction, _timeElapsed);
+							updatePatientData(data);							
 						}
 
 
@@ -777,16 +774,27 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 				}
 
-				var updatePatientData = function (data) {
+				var updatePatientData = function (data,formAction) {
 					console.log("data : ", data);
 
 					var url = VIEW_FORM_API_URL.apiEndpoint + VIEW_FORM_API_URL.urls.UpdatePatient;
 
 					dataFactory.put(data, url, function (data) {
 						console.log("data : ", data);
+						if (formAction) {  
+                           window.location.href = window.location.origin + "/" + formAction + "?id=" + $rootScope.patientId;
+						}
+						else{
+							window.location = $scope.currentPageUrl;
+						}
+						
 					}, function (reason) {
 						console.log("reason : ", reason);
-					})
+						window.location = $scope.currentPageUrl;
+						return false;
+					});
+
+					//window.location = $scope.currentPageUrl;
 				}
 
 				//Reload our form
