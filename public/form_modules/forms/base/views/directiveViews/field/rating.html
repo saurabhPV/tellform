@@ -15,13 +15,13 @@
     <div class="col-xs-12 field-input">
 
 		<input-stars max="{{field.ratingOptions.steps}}"
-					 ng-init="$root.patientInfo[field.title.replace(' ', '_')] = 1"
+					 ng-init="$root.patientInfo[field.model] = 1"
                      on-shape-click="true"
                      on-star-click="nextField(field)"
 					 icon-full="{{field.ratingOptions.shape}}"
 					 icon-base="fa fa-3x"
 					 icon-empty="{{field.ratingOptions.shape}}"
-					 ng-model="$root.patientInfo[field.title.replace(' ', '_')]"
+					 ng-model="$root.patientInfo[field.model]"
 					 ng-model-options="{ debounce: 250 }"
 					 ng-required="field.required"
 					 on-enter-or-tab-key="nextField(field)"

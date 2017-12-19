@@ -7,7 +7,7 @@
 				<i class="fa fa-angle-double-right" aria-hidden="true"></i>
 			</small>
     		{{field.title}}
-    		<span class="required-error" ng-show="!field.required && !$root.patientInfo[field.title.replace(' ', '_')]">{{ 'OPTIONAL' | translate }}</span>
+    		<span class="required-error" ng-show="!field.required && !$root.patientInfo[field.model]">{{ 'OPTIONAL' | translate }}</span>
     	</h3>
 		<p class="col-xs-12">
 			<small>{{field.description}}</small>
@@ -18,9 +18,9 @@
             <input class="focusOn"
             	   ng-focus="setActiveField(field._id, null, false)"
 				   ng-style="{'color': design.colors.answerColor}"
-				   ng-class="{ 'no-border': !!$root.patientInfo[field.title.replace(' ', '_')] }"
+				   ng-class="{ 'no-border': !!$root.patientInfo[field.model] }"
 				   ui-date="dateOptions"
-				   ng-model="$root.patientInfo[field.title.replace(' ', '_')]"
+				   ng-model="$root.patientInfo[field.model]"
 				   ng-model-options="{ debounce: 250 }"
 				   ng-required="field.required"
 				   placeholder="MM/DD/YYYY"

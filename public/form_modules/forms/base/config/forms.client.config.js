@@ -50,8 +50,10 @@ angular.module('view-form').value('supportedFields', [
 
 angular.module('view-form').constant('VIEW_FORM_URL', '/forms/:formId/render');
 
-angular.module('view-form').constant('VIEW_FORM_API_URL', {apiEndpoint :'https://d1c1f28d.ngrok.io/Ptest/api/:pageName',
+angular.module('view-form').constant('VIEW_FORM_API_URL', {
+	apiEndpoint:'https://wv9m8b031d.execute-api.us-east-1.amazonaws.com/Prod/api/',
 urls: {
-	GetPatient: "Patient/{{patientId}}"
+	GetPatient: "Patient/{{patientId}}",
+	UpdatePatient: "Patient"
 }});
 

@@ -19,11 +19,11 @@
     <div class="col-xs-12 field-input container">
 		<div class="row-fluid">
             <label class="btn col-md-5 col-xs-12 option-text"
-				   ng-class="{activeBtn: $root.patientInfo[field.title.replace(' ', '_')] == 'true'}">
+				   ng-class="{activeBtn: $root.patientInfo[field.model] == 'true'}">
                 <input class="focusOn"
                     ng-style="{'color': design.colors.answerColor, 'border-color': design.colors.answerColor, 'display': 'none', 'margin-top': '10px'}"
                     type="radio" value="true"
-                    ng-model="$root.patientInfo[field.title.replace(' ', '_')]"
+                    ng-model="$root.patientInfo[field.model]"
                     ng-model-options="{ debounce: 250 }"
                     ng-required="field.required"
 					ng-change="nextField(field)"/>
@@ -33,11 +33,11 @@
                 <span>{{ 'LEGAL_ACCEPT' | translate }}</span>
             </label>
             <label class="btn col-md-5 col-md-offset-1 col-xs-12 option-text"
-				   ng-class="{activeBtn: $root.patientInfo[field.title.replace(' ', '_')] == 'false'}">
+				   ng-class="{activeBtn: $root.patientInfo[field.model] == 'false'}">
                 <input class="focusOn"
 					ng-style="{'color': design.colors.answerColor, 'border-color': design.colors.answerColor, 'display': 'none', 'margin-top': '10px'}"
                     type="radio" value="false"
-                    ng-model="$root.patientInfo[field.title.replace(' ', '_')]"
+                    ng-model="$root.patientInfo[field.model]"
                     ng-model-options="{ debounce: 250 }"
                     ng-required="field.required"
 					ng-change="nextField(field)"/>
