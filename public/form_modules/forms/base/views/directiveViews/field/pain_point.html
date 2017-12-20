@@ -19,15 +19,15 @@
 		</p>
     </div>
     <div class="col-xs-12 field-input">
-      <div>
+      <div style="height:400px;">
 
-<input style="display: none;" type="text" id="pain_point" name="{{field.fieldType}}{{index}}" ng-model="field.fieldValue" ng-change="setActiveField(field._id, null, false)" value="{{field.fieldValue}}" ng-required="field.required">
+<input style="display: none;" type="{{input_type}}" id="pain_point" name="{{field.fieldType}}{{index}}" ng-model="$root.patientInfo[field.model]" ng-change="setActiveField(field._id, null, false)" value="{{$root.patientInfo[field.model]}}" ng-required="field.required">
 <div  style="position: relative;float:left;">
-<img ng-click="$root.setImagePoint($event)" id="front_pointer_div" src="/static/modules/core/img/Human_front.png" style="max-width: 150px;">
+<img ng-click="$root.setImagePoint($event)" id="front_pointer_div" src="/static/modules/core/img/Human_front.png" style="width: 150px;">
 </div>
 
 <div  style="position: relative;float:left;" >
-<img ng-click="$root.setImagePoint($event)" id="side_pointer_div" src="/static/modules/core/img/Human_side.png" style="max-width: 66px;">
+<img ng-click="$root.setImagePoint($event)" id="side_pointer_div" src="/static/modules/core/img/Human_side.png" style="width: 66px;">
 </div>
 
     </div>

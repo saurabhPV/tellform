@@ -138,6 +138,10 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 					 scope.input_type = 'text';
 				}
 
+				if(scope.field.fieldType == 'pain_point'){
+                     scope.input_type = 'text';
+				}
+
 				var template = getTemplateHtml(fieldType);
 				element.html(template).show();
 				var output = $compile(element.contents())(scope);

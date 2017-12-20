@@ -10,7 +10,7 @@ angular.module('forms').run(['Menus',
 	return function(seconds) {
 		return new Date(1970, 0, 1).setSeconds(seconds);
 	};
-}]).filter('formValidity', [function(){
+}]).filter('formValidity', ['$rootScope',function($rootScope){
         return function(formObj){
         	if(formObj && formObj.form_fields && formObj.visible_form_fields){
 
@@ -23,13 +23,20 @@ angular.module('forms').run(['Menus',
 				});
 
 				var fields = formObj.form_fields;
-
 				var valid_count = fields.filter(function(field){
-					if(typeof field === 'object' && field.fieldType !== 'statement' && field.fieldType !== 'rating'){
-					    return !!(field.fieldValue);
+
+				    if(typeof field === 'object' && field.fieldType !== 'statement' && field.fieldType !== 'rating'){
+						if($rootScope.patientInfo){
+                           return $rootScope.patientInfo[field.model];
+						}
+						else{
+						   return !!(field.fieldValue);
+						}
+					    
 					} else if(field.fieldType === 'rating'){
 					    return true;
 					}
+
 
 				}).length;
 				return valid_count - (formObj.form_fields.length - formObj.visible_form_fields.length);
