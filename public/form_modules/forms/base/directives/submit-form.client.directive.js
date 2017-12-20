@@ -55,6 +55,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										break;
 
 									case 'PhoneNumber':
+									case 'Guarantor_Contact_phone':
 										patient[key].forEach(function (element) {
 											console.log("element : ", element);
 											$rootScope.patientInfo[element.PHType] = element.PHNumber;
@@ -63,6 +64,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 									case 'Address':
 										$rootScope.patientInfo.Address = patient[key][0].AddressLine1;
+										break;
+
+									case 'Guarantor_Contact_Address':
+										$rootScope.patientInfo.Guarantor_Contact_Address = patient[key][0].AddressLine1;
 										break;
 
 									case 'KeyValuePair':
@@ -77,9 +82,6 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										break;
 								}
 							} else {
-								// console.log("key : ", key);
-								// console.log("$rootScope.patientInfo[key] : ", $rootScope.patientInfo[key]);
-								// console.log("patient[key] : ", patient[key]);
 								$rootScope.patientInfo[key] = patient[key];
 							}
 						});
@@ -618,83 +620,86 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 						if ($scope.myform.form_fields[i].fieldType != 'signature') {
 							if ($scope.myform.form_fields[i].parent) {
-								if ($scope.myform.form_fields[i].parent == "KeyValuePair") {
-									if (!data[$scope.myform.form_fields[i].parent]) {
-										data[$scope.myform.form_fields[i].parent] = [];
-									}
-									data[$scope.myform.form_fields[i].parent].push({
-										'Key': $scope.myform.form_fields[i].model,
-										'Value': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
-									})
-								} else if ($scope.myform.form_fields[i].parent == "PhoneNumber") {
-									// console.log("$scope.myform.form_fields[i].parent : ", $scope.myform.form_fields[i].parent);
-									// console.log("$rootScope.patientData : ", $rootScope.patientData);
-									// console.log("$rootScope.patientData.Patient[$scope.myform.form_fields[i].parent] : ", $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent]);
-									// console.log("$rootScope.patientData.Patient[$scope.myform.form_fields[i].parent] : ", $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent]);
 
-									if ($rootScope.patientData.Patient[$scope.myform.form_fields[i].parent] && $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent] != 0){
-										data[$scope.myform.form_fields[i].parent] = $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent];
-									}else{
-										data[$scope.myform.form_fields[i].parent] = [];
-									}
+								switch ($scope.myform.form_fields[i].parent) {
+									case 'KeyValuePair':
+										if (!data[$scope.myform.form_fields[i].parent]) {
+											data[$scope.myform.form_fields[i].parent] = [];
+										}
+										data[$scope.myform.form_fields[i].parent].push({
+											'Key': $scope.myform.form_fields[i].model,
+											'Value': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+										})
+										break;
 
-									console.log("data[$scope.myform.form_fields[i].parent] : ", data[$scope.myform.form_fields[i].parent]);
+									case 'PhoneNumber':
+									case 'Guarantor_Contact_phone':
+										if ($rootScope.patientData.Patient[$scope.myform.form_fields[i].parent] && $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent].length != 0) {
+											data[$scope.myform.form_fields[i].parent] = $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent];
+										} else if (!data[$scope.myform.form_fields[i].parent]) {
+											data[$scope.myform.form_fields[i].parent] = [];
+										}
 
-									if (data[$scope.myform.form_fields[i].parent] != 0) {
-										var phoneNumber = null;
-										phoneNumber = _.filter(data[$scope.myform.form_fields[i].parent], function (phone) {
-											return (phone.PHType == $scope.myform.form_fields[i].model);
-										});
-										console.log("filter phone number : ", phoneNumber);
-										if (phoneNumber.length != 0){
-											for (var j = 0; j < data[$scope.myform.form_fields[i].parent].length; j++){
-												if (data[$scope.myform.form_fields[i].parent][j].PHType == $scope.myform.form_fields[i].model){
-													data[$scope.myform.form_fields[i].parent][j] = {
-														'PHType': $scope.myform.form_fields[i].model,
-														'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model],
-														'Region': '+91'
+										if (data[$scope.myform.form_fields[i].parent].length != 0) {
+											var phoneNumber = null;
+											phoneNumber = _.filter(data[$scope.myform.form_fields[i].parent], function (phone) {
+												return (phone.PHType == $scope.myform.form_fields[i].model);
+											});
+											if (phoneNumber.length != 0) {
+												for (var j = 0; j < data[$scope.myform.form_fields[i].parent].length; j++) {
+													if (data[$scope.myform.form_fields[i].parent][j].PHType == $scope.myform.form_fields[i].model) {
+														data[$scope.myform.form_fields[i].parent][j] = {
+															'PHType': $scope.myform.form_fields[i].model,
+															'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model],
+															'Region': '+91'
+														}
 													}
 												}
+											} else {
+												data[$scope.myform.form_fields[i].parent].push({
+													'PHType': $scope.myform.form_fields[i].model,
+													'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model],
+													'Region': '+91'
+												})
 											}
-										}else{
+										} else {
 											data[$scope.myform.form_fields[i].parent].push({
 												'PHType': $scope.myform.form_fields[i].model,
 												'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model],
 												'Region': '+91'
 											})
 										}
-									} else {
-										data[$scope.myform.form_fields[i].parent].push({
-											'PHType': $scope.myform.form_fields[i].model,
-											'PHNumber': $rootScope.patientInfo[$scope.myform.form_fields[i].model],
-											'Region': '+91'
-										})
-									}
+										break;
 
-								} else if ($scope.myform.form_fields[i].parent == "Address") {
-									if (data[$scope.myform.form_fields[i].parent] && data[$scope.myform.form_fields[i].parent].length != 0) {
-										data[$scope.myform.form_fields[i].parent].push({
-											'AddressLine1': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
-										})
-									} else {
-										data[$scope.myform.form_fields[i].parent] = [];
-										data[$scope.myform.form_fields[i].parent].push({
-											'AddressLine1': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
-										})
-									}
+									case 'Address':
+									case 'Guarantor_Contact_Address':
+										if (data[$scope.myform.form_fields[i].parent] && data[$scope.myform.form_fields[i].parent].length != 0) {
+											data[$scope.myform.form_fields[i].parent].push({
+												'AddressLine1': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+											})
+										} else {
+											data[$scope.myform.form_fields[i].parent] = [];
+											data[$scope.myform.form_fields[i].parent].push({
+												'AddressLine1': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+											})
+										}
+										break;
 
-								} else if ($scope.myform.form_fields[i].parent == "EmailAddress") {
-									if (data[$scope.myform.form_fields[i].parent] && data[$scope.myform.form_fields[i].parent].length != 0) {
-										data[$scope.myform.form_fields[i].parent].push({
-											'Email': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
-										})
-									} else {
-										data[$scope.myform.form_fields[i].parent] = [];
-										data[$scope.myform.form_fields[i].parent].push({
-											'Email': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
-										})
-									}
+									case 'EmailAddress':
+										if (data[$scope.myform.form_fields[i].parent] && data[$scope.myform.form_fields[i].parent].length != 0) {
+											data[$scope.myform.form_fields[i].parent].push({
+												'Email': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+											})
+										} else {
+											data[$scope.myform.form_fields[i].parent] = [];
+											data[$scope.myform.form_fields[i].parent].push({
+												'Email': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+											})
+										}
+										break;
 
+									default:
+										break;
 								}
 							} else {
 								console.log("$scope.myform.form_fields[i].model : ", $scope.myform.form_fields[i].model)
