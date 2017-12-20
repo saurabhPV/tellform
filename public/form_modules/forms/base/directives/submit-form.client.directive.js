@@ -466,6 +466,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							var buttonValue = $rootScope.patientInfo[currField.model];
 							if (buttonValue == "false" && currField.logicJump.action) {
 								$scope.myform.startPage.showStart = true;
+								$rootScope.patientInfo[currField.model] = null;
 							} else {
 								//Jump to logicJump's destination if it is true
 								if (currField.logicJump && currField.logicJump.jumpTo && evaluateLogicJump(currField)) {
