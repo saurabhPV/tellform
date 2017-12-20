@@ -733,11 +733,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 								updatePatientData(data, formAction);
 							}, function () {
 								updatePatientData(data, formAction);
+								return false;
 							});
 
 
 						} else {
-							updatePatientData(data);							
+							updatePatientData(data, formAction);							
 						}
 
 
