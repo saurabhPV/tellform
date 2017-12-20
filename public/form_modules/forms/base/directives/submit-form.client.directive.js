@@ -787,12 +787,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                            window.location.href = window.location.origin + "/" + formAction + "?id=" + $rootScope.patientId;
 						}
 						else{
-							window.location = $scope.currentPageUrl;
+							// window.location = $scope.currentPageUrl;
 						}
 						
 					}, function (reason) {
 						console.log("reason : ", reason);
-						window.location = $scope.currentPageUrl;
+						// window.location = $scope.currentPageUrl;
 						return false;
 					});
 
