@@ -28,14 +28,15 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 					dataFactory.get(url, function (data) {
 						console.log("patent data : ", data);
-						if (!$rootScope.patientInfo) {
-							if (localStorage.getItem("patientInfo")) {
-								$rootScope.patientInfo = JSON.parse(localStorage.getItem("patientInfo"));
-							} else {
-								$rootScope.patientInfo = {}
-							}
-						}
+						// if (!$rootScope.patientInfo) {
+						// 	if (localStorage.getItem("patientInfo")) {
+						// 		$rootScope.patientInfo = JSON.parse(localStorage.getItem("patientInfo"));
+						// 	} else {
+						// 		$rootScope.patientInfo = {}
+						// 	}
+						// }
 
+						$rootScope.patientInfo = {}
 						$rootScope.patientData = data;
 
 						var patient = data.Patient;
@@ -84,11 +85,17 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						});
 
 						console.log("$rootScope.patientInfo after getting data : ", $rootScope.patientInfo);
-
-						console.log("$rootScope.patientInfo : ", $rootScope.patientInfo);
+						localStorage.setItem("patientInfo", JSON.stringify($rootScope.patientInfo));
 
 					}, function (reason) {
 						console.log("reason : ", reason);
+						if (!$rootScope.patientInfo) {
+							if (localStorage.getItem("patientInfo")) {
+								$rootScope.patientInfo = JSON.parse(localStorage.getItem("patientInfo"));
+							} else {
+								$rootScope.patientInfo = {}
+							}
+						}
 					})
 				}
 				var NOSCROLL = false;
