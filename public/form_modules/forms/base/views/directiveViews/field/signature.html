@@ -19,11 +19,11 @@
 		</p>
     </div>
     <div class="col-xs-12 field-input">
-<input style="display: none;" type="{{input_type}}" class="signature-pad" name="{{field.fieldType}}{{index}}" ng-model="field.fieldValue" ng-focus="setActiveField(field._id, null, false)" ng-value="{{field.fieldValue}}" id="sign" ng-required="field.required">
+<input style="display: none;" type="{{input_type}}" class="signature-pad" name="{{field.fieldType}}{{index}}" ng-model="$root.patientInfo[field.model]" ng-focus="setActiveField(field._id, null, false)" ng-value="{{$root.patientInfo[field.model]}}" id="sign" ng-required="field.required">
 
-<signature-pad id="signature-pad" accept="accept" clear="clear" style="border:1px solid black;" height="220" width="400" disabled="false" dataurl="field.fieldValue"></signature-pad>
+<signature-pad id="signature-pad" accept="accept" clear="clear" style="border:1px solid black;" height="220" width="400" disabled="false" dataurl="$root.patientInfo[field.model]"></signature-pad>
 
-<button class="signature_btn btn btn-primary" ng-hide="field.fieldValue == ''" style="margin-top:20px;" ng-click="clear()">Clear</button>
+<button class="signature_btn btn btn-primary" ng-hide="$root.patientInfo[field.model] == ''" style="margin-top:20px;" ng-click="clear()">Clear</button>
 
     </div>
     <div class="col-xs-12">

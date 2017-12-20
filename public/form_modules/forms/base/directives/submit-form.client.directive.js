@@ -75,6 +75,11 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										patient[key].forEach(function(element) {
 											console.log("element : ",element);
 											$rootScope.patientInfo[element.Key] = element.Value;
+
+                                            if(element.Key == 'Pain_Point'){
+                                            	$scope.setExistImagePoint(element.Value);
+                                            }
+
 										}, this);
 										break;
 
@@ -131,26 +136,58 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				}
 
 
-				// $(window).resize(function(){
-				//      console.log($scope.cordinateList);
-
-				// 	 var width = $("#pointer_div").width();
-				// 	 var height = $("#pointer_div").height();
-				// 	 var naturalWidth = $('#pointer_div').get(0).naturalWidth;
-				// 	 var naturalHeight = $("#pointer_div").get(0).naturalHeight;
-
-				//      var widthRatio = roundNumber(naturalWidth/width);
+				$scope.setExistImagePoint = (function(points){
+                     
+                   if($('#front_pointer_div').length > 0){
 
 
-				//      for(var index=0;index < $scope.cordinateList.length; index++){
-				//      	console.log($scope.cordinateList[index]);
-				//         $scope.cordinateList[index].virtual_cordinate.pos_x = roundxNumber($scope.cordinateList[index].real_cordinate.pos_x / widthRatio);
-				//         $scope.cordinateList[index].virtual_cordinate.pos_y = roundNumber($scope.cordinateList[index].real_cordinate.pos_y / widthRatio);
-				//         var style = "position: absolute; top: "+ $scope.cordinateList[index].virtual_cordinate.pos_y +"px; left: "+ $scope.cordinateList[index].virtual_cordinate.pos_x +"px; width: 20px;";
-				//         $("#pointer_"+index).attr('style', style);
-				//      }            
+					 var naturalWidth = $('#front_pointer_div').get(0).naturalWidth;
+					 var width = $("#front_pointer_div").width();					 
 
-				// });
+					 var sideNaturalWidth = $('#side_pointer_div').get(0).naturalWidth;
+					 var sideWidth = $("#side_pointer_div").width();
+
+				     var widthRatio = roundNumber(naturalWidth/width);
+                     var sideWidthRatio = roundNumber(sideNaturalWidth/sideWidth);
+
+                     var pointList = JSON.parse(points); 
+
+                     for(var key in pointList){
+
+                     	for(var index=0;index < pointList[key].length;index++){
+                            
+                            var currentWidthRatio = (key == 'front') ? widthRatio : sideWidthRatio;
+
+                            var current_x_cordinate = roundNumber(pointList[key][index].pos_x/currentWidthRatio);
+                            var current_y_cordinate = roundNumber(pointList[key][index].pos_y/currentWidthRatio);
+ 
+          					var pointer_image_width = 13
+
+		  			        var style = "position: absolute; top: " + (current_y_cordinate - (pointer_image_width / 2)) + "px; left: " + (current_x_cordinate - (pointer_image_width / 2)) + "px;";
+        					var img = $('<img />', {
+        						id: 'pointer_' + (pointList[key].length - 1),
+        						src: '/static/modules/core/img/pointt.png',
+        						style: style,
+        						width: pointer_image_width
+        					});
+
+					        $("#" + key + "_pointer_div").after(img);
+
+        					var cordinateDetail = { real_cordinate: { pos_x: pointList[key][index].pos_x, pos_y: pointList[key][index].pos_y }, virtual_cordinate: { pos_x: current_x_cordinate, pos_y: current_x_cordinate } };
+        
+        					if (key == 'front') {
+        						$scope.cordinateList.front.push(cordinateDetail);
+        					}
+        					else {
+        						$scope.cordinateList.side.push(cordinateDetail);
+        					}
+
+                     	}
+                     }          
+
+                   }
+
+				});
 
 				$rootScope.setImagePoint = $scope.setImagePoint = function (event) {
 
@@ -336,7 +373,6 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 					$scope.selected._id = field_id;
 					$scope.selected.index = field_index;
-
 
 					var nb_valid = $filter('formValidity')($scope.myform);
 					$scope.translateAdvancementData = {
@@ -614,7 +650,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							$rootScope.patientInfo[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model].option_value;
 							data[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model]
 						} else if ($scope.myform.form_fields[i].fieldType == 'signature') {
-							form.signatureUrl = form.form_fields[i].fieldValue;
+							form.signatureUrl = $rootScope.patientInfo[$scope.myform.form_fields[i].model];
 							form.signatureId = form.form_fields[i]._id;
 						}
 
