@@ -19,7 +19,7 @@
 		</p>
     </div>
     <div class="col-xs-12 field-input">
-		<input ng-style="{'color': 'white', 'border-color': 'white'}"
+		<input id="ssn" ng-style="{'color': 'white', 'border-color': 'white'}"
 			name="{{field.fieldType}}{{index}}"
             type="{{input_type}}"
 		   	ng-pattern="validateRegex"
@@ -33,7 +33,8 @@
 		   	on-enter-or-tab-key="nextField(field)"
 		   	on-tab-and-shift-key="prevField()"
 			ng-required="field.required"
-	        aria-describedby="inputError2Status" />
+	        aria-describedby="inputError2Status" 
+	        ng-keyup="$root.ssnKeyUp($event)" ng-keypress="$root.checkNumber($event)" maxlength="11" />
     </div>
     <div class="col-xs-12">
         <div ng-show="forms.myForm.{{field.fieldType}}{{index}}.$invalid && !!forms.myForm.{{field.fieldType}}{{index}}.$viewValue " class="alert alert-danger" role="alert">
@@ -45,7 +46,7 @@
         </div>
     </div>
 </div>
-<div class="accept_field">
+<div>
 	<div class="btn btn-lg btn-default" ng-disabled="!$root.patientInfo[field.model] || field.$invalid"
 		 style="padding: 4px; margin-top:8px;"
 		 ng-style="{'background-color':design.colors.buttonColor}"

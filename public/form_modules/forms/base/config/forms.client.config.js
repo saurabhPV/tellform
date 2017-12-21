@@ -45,7 +45,8 @@ angular.module('view-form').value('supportedFields', [
 	'number',
 	'natural',
 	'signature',
-	'pain_point'
+	'pain_point',
+	'social_security_number'
 ]);
 
 angular.module('view-form').constant('VIEW_FORM_URL', '/forms/:formId/render');
