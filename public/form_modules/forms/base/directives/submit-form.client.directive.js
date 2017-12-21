@@ -575,29 +575,21 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					$scope.$apply();
 				};
 
-				$rootScope.nextField = $scope.nextField = function (selectedField) {
+				$rootScope.nextField = $scope.nextField = function (selectedField, value) {
 					if ($scope.selected && $scope.selected.index > -1) {
 						if ($scope.selected._id !== FORM_ACTION_ID) {
 							var currField = $scope.myform.visible_form_fields[$scope.selected.index];
-							//var currField = selectedField;
-							console.log("currField : ", currField);
-							console.log("currField.model : ", currField.model);
-							console.log("$rootScope.patientInfo : ", $rootScope.patientInfo);
-							console.log("$rootScope.patientInfo[currField.model] : ", $rootScope.patientInfo[currField.model]);
-							var buttonValue = $rootScope.patientInfo[currField.model];
-							console.log("buttonValue : ", buttonValue);
-							console.log("$scope.myform : ", $scope.myform)
-							if (buttonValue == "false" && currField.fieldType == "legal" && $scope.myform.endPage.action) {
-								// $scope.myform.startPage.showStart = true;
-								// $rootScope.patientInfo[currField.model] = null;
-								// toastr.info(`You have answered "No" for the last question, so you will not need to fill this form. You will be redirected to the next form.`, 'Information');
-								// var data = {};
-								// data.HospitalMRN = $rootScope.patientId;
-								// data[currField.parent] = {
-								// 	'Key': currField.model,
-								// 	'Value': $rootScope.patientInfo[currField.model]
-								// }
-								// updatePatientData(data, $scope.myform.endPage.action);
+
+							if (value == 'false' && currField.fieldType == "legal" && $scope.myform.endPage.action) {
+								toastr.info(`You have answered "No" for the last question, so you will not need to fill this form. You will be redirected to the next form.`, 'Information');
+								var data = {};
+								data.HospitalMRN = $rootScope.patientId;
+								data[currField.parent] = [];
+								data[currField.parent].push({
+									'Key': currField.model,
+									'Value': value
+								});
+								updatePatientData(data, $scope.myform.endPage.action);
 							} else {
 								//Jump to logicJump's destination if it is true
 								if (currField.logicJump && currField.logicJump.jumpTo && evaluateLogicJump(currField)) {
@@ -934,6 +926,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						
 					}, function (reason) {
 						console.log("reason : ", reason);
+						toastr.error('Oops, something went wrong. Please try again later', 'Error');
 						// window.location = $scope.currentPageUrl;
 						return false;
 					});
