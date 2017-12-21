@@ -33,7 +33,7 @@ angular.module('forms').config(['$stateProvider',
 				Forms: 'GetForms',
 				myForm: function (GetForms, $stateParams, $q) {
 		           	var deferred = $q.defer();
-		           	GetForms.get({formId: $stateParams.formId, id: $stateParams.id}, function(resolvedForm){
+		           	GetForms.get({formId: $stateParams.formId}, function(resolvedForm){
 		           		deferred.resolve(resolvedForm);
 					});
 

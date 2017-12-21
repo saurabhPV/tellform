@@ -109,7 +109,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				var FORM_ACTION_ID = 'submit_field';
 				$scope.forms = {};
 				$scope.cordinateList = { front: [], side: [] };
-                $scope.validSSN = false;
+				$scope.validSSN = false;
 				//Don't start timer if we are looking at a design preview
 				if ($scope.ispreview) {
 					TimeCounter.restartClock();
@@ -245,86 +245,86 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 				};
 
-				$rootScope.checkNumber = $scope.checkNumber = function(event){
+				$rootScope.checkNumber = $scope.checkNumber = function (event) {
 
-                    var keys={
-                        'up': 38,'right':39,'down':40,'left':37,
-                        'escape':27,'backspace':8,'tab':9,'enter':13,
-                        '0':48,'1':49,'2':50,'3':51,'4':52,'5':53,'6':54,'7':55,'8':56,'9':57
-                    };
+					var keys = {
+						'up': 38, 'right': 39, 'down': 40, 'left': 37,
+						'escape': 27, 'backspace': 8, 'tab': 9, 'enter': 13,
+						'0': 48, '1': 49, '2': 50, '3': 51, '4': 52, '5': 53, '6': 54, '7': 55, '8': 56, '9': 57
+					};
 
-                    var valid = true;
+					var valid = true;
 
-                    for(var index in keys) {
+					for (var index in keys) {
 
-                        if (!keys.hasOwnProperty(index)) continue;
-                        console.log(event.keyCode);
-                        console.log(event.charCode);
-                        console.log(event.which);
-                        if (event.charCode==keys[index]||event.keyCode==keys[index]) {
-                           valid = true;
-                           break;
-                        }
-                        else{
-                        	valid = false;
-                        }
-                    }  
+						if (!keys.hasOwnProperty(index)) continue;
+						console.log(event.keyCode);
+						console.log(event.charCode);
+						console.log(event.which);
+						if (event.charCode == keys[index] || event.keyCode == keys[index]) {
+							valid = true;
+							break;
+						}
+						else {
+							valid = false;
+						}
+					}
 
-                    $scope.validSSN = valid; 
+					$scope.validSSN = valid;
 
-                    if(!valid){
-                    	event.preventDefault();
-                    	return false;
-                    }
+					if (!valid) {
+						event.preventDefault();
+						return false;
+					}
 
 				}
 
-				$rootScope.ssnKeyUp = $scope.ssnKeyUp = function(event){
+				$rootScope.ssnKeyUp = $scope.ssnKeyUp = function (event) {
 					console.log("key up");
 
-                    if($scope.validSSN){
+					if ($scope.validSSN) {
 
-                    var SSNValue = angular.element('#ssn').val();
-                    SSNValue = SSNValue.replace(/ /g, '');
-            
-                    var SSNLength = SSNValue.length;
-                    var m = 1;
-                    var arr = SSNValue.split('');
-                    var SSNnewval = "";
-            
-                    if (arr.length > 0) {
-                        for (var m = 0; m < arr.length; m++) {
-                            if (m == 3 || m == 6) {
-                                SSNnewval = SSNnewval + '-';
-                            }
-            
-                            if (m < 6) {
-            
-                            	if(arr[m] != '-'){
-                            	  SSNnewval = SSNnewval + arr[m].replace(/[0-9]/g, "*");	
-                            	}
-                                
-                            } else {
-                            	if(arr[m] != '-'){
-                            		SSNnewval = SSNnewval + arr[m];
-                            	}
-                                
-                            }
-                            console.log(SSNnewval);
-                        }
-                    }
+						var SSNValue = angular.element('#ssn').val();
+						SSNValue = SSNValue.replace(/ /g, '');
 
-                    angular.element('#ssn').val(SSNnewval);
+						var SSNLength = SSNValue.length;
+						var m = 1;
+						var arr = SSNValue.split('');
+						var SSNnewval = "";
+
+						if (arr.length > 0) {
+							for (var m = 0; m < arr.length; m++) {
+								if (m == 3 || m == 6) {
+									SSNnewval = SSNnewval + '-';
+								}
+
+								if (m < 6) {
+
+									if (arr[m] != '-') {
+										SSNnewval = SSNnewval + arr[m].replace(/[0-9]/g, "*");
+									}
+
+								} else {
+									if (arr[m] != '-') {
+										SSNnewval = SSNnewval + arr[m];
+									}
+
+								}
+								console.log(SSNnewval);
+							}
+						}
+
+						angular.element('#ssn').val(SSNnewval);
 
 
 
-                    }
+					}
 
-                    //$("#ssn").val(SSNnewval);
+					//$("#ssn").val(SSNnewval);
 
-				}
-
-				$scope.reloadForm = function () {
+				}	
+				
+							$scope.reloadForm = function () {
 					//Reset Form
 					$scope.myform.submitted = false;
 					$scope.myform.form_fields = _.chain($scope.myform.visible_form_fields).map(function (field) {
