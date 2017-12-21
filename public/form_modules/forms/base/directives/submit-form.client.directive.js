@@ -9,8 +9,8 @@ jsep.addBinaryOp('!begins', 10);
 jsep.addBinaryOp('ends', 10);
 jsep.addBinaryOp('!ends', 10);
 
-angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout', 'dataFactory', 'VIEW_FORM_API_URL', '$location', 'AwsDocument',
-	function ($http, TimeCounter, $filter, $rootScope, SendVisitorData, $translate, $timeout, dataFactory, VIEW_FORM_API_URL, $location, AwsDocument) {
+angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout', 'dataFactory', 'VIEW_FORM_API_URL', '$location', 'AwsDocument','toastr',
+	function ($http, TimeCounter, $filter, $rootScope, SendVisitorData, $translate, $timeout, dataFactory, VIEW_FORM_API_URL, $location, AwsDocument, toastr) {
 		return {
 			templateUrl: 'form_modules/forms/base/views/directiveViews/form/submit-form.client.view.html',
 			restrict: 'E',
@@ -48,7 +48,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						patientKeys.forEach(function (key) {
 							console.log("keys : ", key);
 							console.log("Array.isArray(patient[key]) : ", Array.isArray(patient[key]));
-							if (Array.isArray(patient[key])) {
+							if (Array.isArray(patient[key]) && patient[key].length !=0) {
 								switch (key) {
 									case 'EmailAddress':
 										$rootScope.patientInfo.EmailAddress = patient[key][0].Email;
@@ -501,10 +501,24 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						if ($scope.selected._id !== FORM_ACTION_ID) {
 							var currField = $scope.myform.visible_form_fields[$scope.selected.index];
 							//var currField = selectedField;
+							console.log("currField : ", currField);
+							console.log("currField.model : ", currField.model);
+							console.log("$rootScope.patientInfo : ", $rootScope.patientInfo);
+							console.log("$rootScope.patientInfo[currField.model] : ", $rootScope.patientInfo[currField.model]);
 							var buttonValue = $rootScope.patientInfo[currField.model];
-							if (buttonValue == "false" && currField.logicJump.action) {
-								$scope.myform.startPage.showStart = true;
-								$rootScope.patientInfo[currField.model] = null;
+							console.log("buttonValue : ", buttonValue);
+							console.log("$scope.myform : ", $scope.myform)
+							if (buttonValue == "false" && currField.fieldType == "legal" && $scope.myform.endPage.action) {
+								// $scope.myform.startPage.showStart = true;
+								// $rootScope.patientInfo[currField.model] = null;
+								// toastr.info(`You have answered "No" for the last question, so you will not need to fill this form. You will be redirected to the next form.`, 'Information');
+								// var data = {};
+								// data.HospitalMRN = $rootScope.patientId;
+								// data[currField.parent] = {
+								// 	'Key': currField.model,
+								// 	'Value': $rootScope.patientInfo[currField.model]
+								// }
+								// updatePatientData(data, $scope.myform.endPage.action);
 							} else {
 								//Jump to logicJump's destination if it is true
 								if (currField.logicJump && currField.logicJump.jumpTo && evaluateLogicJump(currField)) {
@@ -643,7 +657,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					console.log("patent info : ", $rootScope.patientInfo);
 					form.signatureUrl = '';
 					var data = {};
-					data.ID = $rootScope.patientId;
+					data.HospitalMRN = $rootScope.patientId;
 
 					for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {

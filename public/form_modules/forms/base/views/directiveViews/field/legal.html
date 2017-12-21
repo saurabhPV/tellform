@@ -26,7 +26,7 @@
                     ng-model="$root.patientInfo[field.model]"
                     ng-model-options="{ debounce: 250 }"
                     ng-required="field.required"
-					ng-change="nextField(field)"/>
+					ng-click="nextField(field)"/>
 				<div class="letter" style="float:left">
 					{{ 'Y' | translate }}
 				</div>
