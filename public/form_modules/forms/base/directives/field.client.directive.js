@@ -29,7 +29,8 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 				'number',
 				'natural',
 				'signature',
-				'pain_point'
+				'pain_point',
+				'social_security_number'
 			];
 
 			var templateUrl = 'form_modules/forms/base/views/directiveViews/field/';
@@ -141,6 +142,12 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 				if(scope.field.fieldType == 'pain_point'){
                      scope.input_type = 'text';
 				}
+
+				if(scope.field.fieldType == 'social_security_number'){
+                     scope.input_type = 'text';
+				}	
+
+
 
 				var template = getTemplateHtml(fieldType);
 				element.html(template).show();

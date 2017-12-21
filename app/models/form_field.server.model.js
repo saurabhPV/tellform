@@ -126,7 +126,8 @@ function BaseFieldSchema(){
 				'stripe',
 				'number',
 				'signature',
-				'pain_point'
+				'pain_point',
+				'social_security_number'
 			]
 		},
 		fieldValue: Schema.Types.Mixed
