@@ -45,7 +45,8 @@
     "angular-strap": "^2.3.12",
     "angular-signature": "https://github.com/mobile-support93/angular-signature.git#set-default-dataURL",
     "angular-toastr": "^2.1.1",
-    "angular-animate": "^1.6.7"
+    "angular-animate": "^1.6.7",
+    "angular-moment": "^1.2.0"
   },
   "resolutions": {
     "angular-bootstrap": "^0.14.0",

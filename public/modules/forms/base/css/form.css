@@ -360,6 +360,7 @@ section.public-form field-directive .btn[disabled]{
     opacity: 0.2;
     padding: 0px 2px 0px 32px;
     width:100%;
+    margin-bottom: 120px;
 }
 
 .form-field-wrapper .form-actions.activeField, .field-directive.activeField {
@@ -492,5 +493,9 @@ background: #e0e8ee !important;
 
 .accept_field{
     margin-bottom: 50px;
+}
+
+.ageField{
+    margin-left: 20px;
 }
     
