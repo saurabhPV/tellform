@@ -15,7 +15,7 @@
             <small>{{field.description}}</small>
         </p>
     </div>
-    <div class="col-xs-12 field-input ageField" ng-style="'margin-left': 20px;">
+    <div class="col-xs-12 field-input ageField">
             <span>{{ -1 * ($root.patientInfo[field.model] | amDifference : null : 'years') }}</span>
     </div>
 </div>
