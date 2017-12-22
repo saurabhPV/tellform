@@ -13,7 +13,7 @@
 			<small>{{field.description}}</small>
 		</p>
     </div>
-    <div class="col-xs-12 field-input">
+    <div class="col-xs-12 field-input" ng-style="{'position': 'relative !important'}">
 		<ui-select ng-model="$root.patientInfo[field.model]"
 		 		ng-focus="setActiveField(field._id, null, false)"
                 theme="selectize"
@@ -26,7 +26,7 @@
 				ng-change="nextField(field)">
 			<ui-select-match placeholder="{{ 'OPTION_PLACEHOLDER' | translate }}">
 			</ui-select-match>
-			<ui-select-choices repeat="option in field.fieldOptions | filter: $select.search" ng-style="{'position': 'relative','overflow-y':'scroll','height':'200px'}">
+			<ui-select-choices repeat="option in field.fieldOptions | filter: $select.search" ng-style="{'position': 'relative !important','overflow-y':'scroll','height':'200px'}">
 				<span ng-bind-html="option.option_value | highlight: $select.search"></span>
 			</ui-select-choices>
         </ui-select>
