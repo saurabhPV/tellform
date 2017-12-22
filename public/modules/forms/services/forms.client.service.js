@@ -3,7 +3,7 @@
 //Forms service used for communicating with the forms REST endpoints
 angular.module('forms').factory('GetForms', ['$resource', 'FORM_URL',
 	function($resource, FORM_URL) {
-		return $resource(FORM_URL, {
+		return $resource('https://xsf62etg6c.execute-api.us-east-1.amazonaws.com/v1/:formId', {
 			formId: '@_id'
 		}, {
 			'query' : {
