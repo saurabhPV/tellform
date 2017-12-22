@@ -106,7 +106,8 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 						changeMonth: true,
 						altFormat: 'mm/dd/yyyy',
 						yearRange: '1900:-0',
-						defaultDate: 0
+						defaultDate: 0,
+						maxDate: new Date()
 					};
 				}
 
