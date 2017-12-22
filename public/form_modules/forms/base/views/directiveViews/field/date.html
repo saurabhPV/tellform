@@ -1,6 +1,6 @@
 <div class="field row"
 	 ng-click="setActiveField(field._id, index, true)">
-    <div class="col-xs-12 field-title" ng-style="{'color': design.colors.questionColor}">
+    <div class="col-xs-12 field-title ageField" ng-style="{'color': design.colors.questionColor}">
     	<h3>
 			<small class="field-number">
 				{{index+1}}
@@ -13,7 +13,7 @@
 			<small>{{field.description}}</small>
 		</p>
     </div>
-    <div class="col-xs-12 field-input">
+    <div class="col-xs-12 field-input ageField">
         <div class="control-group input-append">
             <input class="focusOn"
             	   ng-focus="setActiveField(field._id, null, false)"

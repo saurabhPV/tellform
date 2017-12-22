@@ -16,6 +16,7 @@
         </p>
     </div>
     <div class="col-xs-12 field-input ageField">
-            <span>{{ -1 * ($root.patientInfo[field.model] | amDifference : null : 'years') }}</span>
+            <span ng-if="($root.patientInfo[field.model] | amDifference : null : 'years') == 0"></span>
+            <span ng-if="($root.patientInfo[field.model] | amDifference : null : 'years') != 0">{{ -1 * ($root.patientInfo[field.model] | amDifference : null : 'years') }}</span>
     </div>
 </div>
