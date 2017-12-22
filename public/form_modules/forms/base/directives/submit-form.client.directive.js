@@ -324,7 +324,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 				}	
 				
-							$scope.reloadForm = function () {
+				$scope.reloadForm = function () {
 					//Reset Form
 					$scope.myform.submitted = false;
 					$scope.myform.form_fields = _.chain($scope.myform.visible_form_fields).map(function (field) {
@@ -737,6 +737,9 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						} else if ($scope.myform.form_fields[i].fieldType == 'signature') {
 							form.signatureUrl = $rootScope.patientInfo[$scope.myform.form_fields[i].model];
 							form.signatureId = form.form_fields[i]._id;
+                            if(form.form_fields[i].uploadUrl){
+                                form.uploadUrl = form.form_fields[i].uploadUrl;
+                            }
 						}
 
 						if ($scope.myform.form_fields[i].fieldType != 'signature') {
@@ -853,7 +856,17 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 							var awsFile = AwsDocument.getFile(form.signatureUrl);
 
-							AwsDocument.upload(awsFile, $rootScope.patientData.uploadphoto, function (result) {
+                            var fileUploadUrl = '';
+                            
+                            if(form.uploadUrl){
+                               fileUploadUrl = form.uploadUrl;                              
+                            } 
+                            else{
+                               fileUploadUrl = $rootScope.patentData.uploadphoto;
+                            }
+
+
+							AwsDocument.upload(awsFile, fileUploadUrl, function (result) {
 
 								for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 									if (form.signatureId == form.form_fields[i]._id) {

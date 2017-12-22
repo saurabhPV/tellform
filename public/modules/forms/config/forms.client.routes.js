@@ -24,7 +24,7 @@ angular.module('forms').config(['$stateProvider',
 			controller: 'ListFormsController',
 			controllerAs: 'ctrl'
   		}).state('submitForm', {
-			url: '/forms/:formId',
+			url: '/forms/:formId?id',
 			templateUrl: '/static/form_modules/forms/base/views/submit-form.client.view.html',
 			data: {
 				hideNav: true
@@ -33,12 +33,15 @@ angular.module('forms').config(['$stateProvider',
 				Forms: 'GetForms',
 				myForm: function (GetForms, $stateParams, $q) {
 		           	var deferred = $q.defer();
-		           	GetForms.get({formId: $stateParams.formId}, function(resolvedForm){
+		           	GetForms.get({formId: $stateParams.formId,id: $stateParams.id}, function(resolvedForm){
 		           		deferred.resolve(resolvedForm);
 					});
 
 					return deferred.promise;
 		        }
+			},
+			params: {
+				id:null
 			},
 			controller: 'SubmitFormController',
 			controllerAs: 'ctrl'
