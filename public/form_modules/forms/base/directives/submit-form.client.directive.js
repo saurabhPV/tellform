@@ -19,6 +19,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				ispreview: '='
 			},
 			controller: function ($document, $window, $scope) {
+				
+                $scope.ssn = '';
 				$scope.currentPageUrl = window.location.href;
 				if ($location.search().id) {
 					$rootScope.patientId = $location.search().id;
@@ -77,8 +79,18 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 											$rootScope.patientInfo[element.Key] = element.Value;
 
                                             if(element.Key == 'Pain_Point'){
-                                            	$scope.setExistImagePoint(element.Value);
+                                            	if(element.Value){
+                                            	  $scope.setExistImagePoint(element.Value);	
+                                            	}                                            	
                                             }
+
+                                            if(element.key == 'social_security_number'){
+                                            	if(element.Value){
+                                            		$scope.decryptSSN(element.Value);
+                                            	}
+                                            }
+
+
 
 										}, this);
 										break;
@@ -134,6 +146,37 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				function roundNumber(number) {
 					return Number(number.toFixed(2));
 				}
+
+
+
+                // $rootScope.setSSNEncrypted = $scope.setSSNEncrypted = function(){
+
+
+                //     // Encrypt 
+                //     var ciphertext = CryptoJS.AES.encrypt($scope.ssn, 'secret key 123');
+                    
+                //     console.log(ciphertext.toString());
+
+                //     // Decrypt 
+                //     var bytes  = CryptoJS.AES.decrypt(ciphertext.toString(), 'secret key 123');
+                //     var plaintext = bytes.toString(CryptoJS.enc.Utf8);
+                     
+                //     console.log(plaintext);
+
+                // };
+
+                // $scope.setSSNEncrypted();
+
+                $rootScope.decryptSSN = $scope.decryptSSN = function(encryptedSSN){
+
+                    var bytes  = CryptoJS.AES.decrypt(encryptedSSN.toString(), '12345');
+                    var plaintext = bytes.toString(CryptoJS.enc.Utf8);
+                     
+                    $scope.ssn = plaintext;
+
+                    angular.element('#ssn').val('****-***-'+plaintext.slice(-4));  
+
+                };
 
 
 				$scope.setExistImagePoint = (function(points){
@@ -258,9 +301,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					for (var index in keys) {
 
 						if (!keys.hasOwnProperty(index)) continue;
-						console.log(event.keyCode);
-						console.log(event.charCode);
-						console.log(event.which);
+
 						if (event.charCode == keys[index] || event.keyCode == keys[index]) {
 							valid = true;
 							break;
@@ -277,50 +318,68 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						return false;
 					}
 
+					var SSNValue = angular.element('#ssn').val();
+	
+					if(SSNValue.length > 10){
+						$scope.validSSN = false;
+					}
+
 				}
 
 				$rootScope.ssnKeyUp = $scope.ssnKeyUp = function (event) {
-					console.log("key up");
-
+			
 					if ($scope.validSSN) {
-
+                       
 						var SSNValue = angular.element('#ssn').val();
+			
 						SSNValue = SSNValue.replace(/ /g, '');
 
-						var SSNLength = SSNValue.length;
-						var m = 1;
-						var arr = SSNValue.split('');
-						var SSNnewval = "";
+                        var SSNLength = SSNValue.length;
 
-						if (arr.length > 0) {
-							for (var m = 0; m < arr.length; m++) {
-								if (m == 3 || m == 6) {
-									SSNnewval = SSNnewval + '-';
-								}
+                        if( (SSNLength < 12) && (!(isNaN(event.key))) ){                        	 
+                               
+                             var ssnLengthDetail = SSNLength-1;
 
-								if (m < 6) {
+                             if(SSNLength > 7){
+                             	ssnLengthDetail = SSNLength - 3;
+                             }
+                             else if(SSNLength > 4){
+                             	ssnLengthDetail = SSNLength -2;
+                             }
 
-									if (arr[m] != '-') {
-										SSNnewval = SSNnewval + arr[m].replace(/[0-9]/g, "*");
-									}
-
-								} else {
-									if (arr[m] != '-') {
-										SSNnewval = SSNnewval + arr[m];
-									}
-
-								}
-								console.log(SSNnewval);
-							}
-						}
-
-						angular.element('#ssn').val(SSNnewval);
+                             $scope.ssn = $scope.ssn.substring(0, ssnLengthDetail);
+                             $scope.ssn += event.key;	
 
 
-
+       						 var m = 1;
+       						 var arr = SSNValue.split('');
+       						 var SSNnewval = "";
+       
+       						 if (arr.length > 0) {
+       							for (var m = 0; m < arr.length; m++) {
+       								if (m == 3 || m == 6) {
+       									SSNnewval = SSNnewval + '-';
+       								}
+       
+       								if (m < 6) {
+       
+       									if (arr[m] != '-') {
+       										SSNnewval = SSNnewval + arr[m].replace(/[0-9]/g, "*");
+       									}
+       
+       								} else {
+       									if (arr[m] != '-') {
+       										SSNnewval = SSNnewval + arr[m];
+       									}
+       
+       								}
+       							}
+       						 }
+       
+       						 angular.element('#ssn').val(SSNnewval);                               
+                        }                        
+				
 					}
-
-					//$("#ssn").val(SSNnewval);
 
 				}	
 				
@@ -676,9 +735,20 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 
 				$rootScope.submitForm = $scope.submitForm = function () {
+     //                console.log($scope.ssn);
+     //                console.log($rootScope.patientId);
+     //              // console.log(CryptoJS.AES.encrypt($scope.ssn, $rootScope.patientId));
+     //                //console.log(CryptoJS.AES.encrypt($scope.ssn, 12345));
+
+     //                var ciphertext = CryptoJS.AES.encrypt($scope.ssn, '123456789');
+                    
+     //                console.log(ciphertext.toString());
+
+     //                return false;
+     //               // $rootScope.patientInfo[$scope.myform.form_fields[i].model] = CryptoJS.AES.encrypt($scope.ssn, $rootScope.patientId);  
                    
-					console.log($scope.forms);
-					console.log($scope.myform);
+					// console.log($scope.forms);
+					// console.log($scope.myform);
 
 					if ($scope.forms.myForm.$invalid) {
 						$scope.goToInvalid();
@@ -740,6 +810,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                             if(form.form_fields[i].uploadUrl){
                                 form.uploadUrl = form.form_fields[i].uploadUrl;
                             }
+						}
+
+						if($scope.myform.form_fields[i].fieldType == 'social_security_number'){
+                             $rootScope.patientInfo[$scope.myform.form_fields[i].model] = CryptoJS.AES.encrypt($scope.ssn, $rootScope.patientId); 
 						}
 
 						if ($scope.myform.form_fields[i].fieldType != 'signature') {
