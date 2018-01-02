@@ -127,7 +127,8 @@ function BaseFieldSchema(){
 				'number',
 				'signature',
 				'pain_point',
-				'social_security_number'
+				'social_security_number',
+				'agefield'
 			]
 		},
 		fieldValue: Schema.Types.Mixed

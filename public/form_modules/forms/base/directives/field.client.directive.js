@@ -30,7 +30,8 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 				'natural',
 				'signature',
 				'pain_point',
-				'social_security_number'
+				'social_security_number',
+				'agefield'
 			];
 
 			var templateUrl = 'form_modules/forms/base/views/directiveViews/field/';
@@ -105,7 +106,8 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 						changeMonth: true,
 						altFormat: 'mm/dd/yyyy',
 						yearRange: '1900:-0',
-						defaultDate: 0
+						defaultDate: 0,
+						maxDate: new Date()
 					};
 				}
 

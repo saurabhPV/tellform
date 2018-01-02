@@ -83,7 +83,11 @@ angular.module('forms').service('FormFields', [ '$rootScope', '$translate', 'Aut
 		    {
 		    	name : 'social_security_number',
 		    	value : $translate.instant('SOCIAL_SECURITY_NUMBER')
-		    }
+		    },
+			{
+				name: 'agefield',
+				value: $translate.instant('AGE_FIELD')
+			}
 		];
 	}
 

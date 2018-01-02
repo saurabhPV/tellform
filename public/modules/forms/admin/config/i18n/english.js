@@ -161,6 +161,7 @@ angular.module('forms').config(['$translateProvider', function ($translateProvid
 	    SIGNATURE: 'Signature',
 	    PAIN_POINT: 'Pain Point',
 	    SOCIAL_SECURITY_NUMBER: 'Social Security Number',
+		AGE_FIELD: 'Age Field',
 	    FILE_UPLOAD: 'File upload',
 	    OPTION_SCALE: 'Option Scale',
 	    PAYMENT: 'Payment',

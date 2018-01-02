@@ -46,13 +46,14 @@ angular.module('view-form').value('supportedFields', [
 	'natural',
 	'signature',
 	'pain_point',
-	'social_security_number'
+	'social_security_number',
+	'agefield'
 ]);
 
 angular.module('view-form').constant('VIEW_FORM_URL', '/forms/:formId/render');
 
 angular.module('view-form').constant('VIEW_FORM_API_URL', {
-	apiEndpoint: 'https://wv9m8b031d.execute-api.us-east-1.amazonaws.com/Prod/api/',
+	apiEndpoint: 'https://j3d8nfrkae.execute-api.us-east-1.amazonaws.com/Prod/api/',
 urls: {
 	GetPatient: "Patient/{{patientId}}",
 	UpdatePatient: "Patient"
