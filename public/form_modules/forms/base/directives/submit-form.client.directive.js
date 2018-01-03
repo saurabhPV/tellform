@@ -463,8 +463,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					if (animateScroll) {
 						NOSCROLL = true;
 						setTimeout(function () {
-							$document.scrollToElement(angular.element('.activeField'), -10, 200).then(function () {
-								NOSCROLL = false;
+							$document.scrollToElement(angular.element('.activeField'), -10, 1000).then(function () {
+								// NOSCROLL = false;
 								setTimeout(function () {
 									if (document.querySelectorAll('.activeField .focusOn').length) {
 										//Handle default case
@@ -476,6 +476,9 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										//Handle case for dropdown input
 										document.querySelectorAll('.activeField .selectize-input')[0].focus();
 									}
+									setTimeout(function() {
+										NOSCROLL = false;
+									}, 1000);
 								});
 							});
 						});
@@ -576,6 +579,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				};
 
 				$rootScope.nextField = $scope.nextField = function (selectedField, value) {
+					$scope.myform.visible_form_fields.forEach(function(element, index) {
+						if (angular.equals(element, selectedField)){
+							console.log("object match");
+							$scope.selected.index = index;
+						}
+					}, this);
 					if ($scope.selected && $scope.selected.index > -1) {
 						if ($scope.selected._id !== FORM_ACTION_ID) {
 							var currField = $scope.myform.visible_form_fields[$scope.selected.index];
