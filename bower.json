@@ -19,7 +19,7 @@
     "angular-ui-router": "~0.2.11",
     "ng-file-upload": "^12.0.4",
     "angular-raven": "~0.5.11",
-    "angular-ui-date": "~0.0.11",
+    "angular-ui-date": "^1.0.1",
     "lodash": "~3.10.0",
     "angular-ui-sortable": "~0.13.4",
     "angular-permission": "~1.1.1",
