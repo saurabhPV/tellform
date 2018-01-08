@@ -85,7 +85,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
                                             if(element.Key == 'Social_Security'){
                                             	if(element.Value){
-                                            		$rootScope.patientInfo[element.Key] = $scope.decryptSSN(element.Value);
+                                            		$rootScope.patientInfo[element.Key] = $scope.decryptSSN(element.Value,element.Key);
                                             	}
                                             }
 
@@ -145,12 +145,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					return Number(number.toFixed(2));
 				}
 
-				$rootScope.decryptSSN = $scope.decryptSSN = function (encryptedSSN) {
+				$rootScope.decryptSSN = $scope.decryptSSN = function (encryptedSSN,keyId) {
 
                     var bytes  = CryptoJS.AES.decrypt(encryptedSSN.toString(), $rootScope.patientId);
                     var plaintext = bytes.toString(CryptoJS.enc.Utf8);
                     console.log(plaintext);
-                    $("#ssn").parent().find('input[type=hidden]').val(plaintext);
+                    $("#"+keyId).parent().find('input[type=hidden]').val(plaintext);
                     return 'XXX-XX-'+ plaintext.slice(-4);
 
 				};

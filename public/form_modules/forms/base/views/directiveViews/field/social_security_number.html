@@ -20,7 +20,7 @@
     </div>
     <!-- ng-keyup="$root.ssnKeyUp($event)" ng-keypress="$root.checkNumber($event)" -->
     <div class="col-xs-12 field-input">
-		<input id="ssn" ng-style="{'color': 'white', 'border-color': 'white'}"
+		<input id="{{field.model}}" ng-style="{'color': 'white', 'border-color': 'white'}"
 			name="{{field.fieldType}}{{index}}"
             type="text"
 		   	ng-pattern="validateRegex"
