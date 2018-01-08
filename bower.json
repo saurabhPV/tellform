@@ -19,7 +19,7 @@
     "angular-ui-router": "~0.2.11",
     "ng-file-upload": "^12.0.4",
     "angular-raven": "~0.5.11",
-    "angular-ui-date": "~0.0.11",
+    "angular-ui-date": "^1.0.1",
     "lodash": "~3.10.0",
     "angular-ui-sortable": "~0.13.4",
     "angular-permission": "~1.1.1",
@@ -48,9 +48,8 @@
     "angular-animate": "^1.6.7",
     "crypto-js": "^3.1.9",
     "angular-moment": "^1.2.0",
-    "jquery-mask-plugin": "^1.14.13",
     "jquery.maskedinput": "^1.4.1",
-    "masking-ssn-field": "mask-ssn-field#*"    
+    "masking-ssn-field": "mask-ssn-field#*"
   },
   "resolutions": {
     "angular-bootstrap": "^0.14.0",

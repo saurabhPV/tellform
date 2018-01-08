@@ -9,7 +9,7 @@ jsep.addBinaryOp('!begins', 10);
 jsep.addBinaryOp('ends', 10);
 jsep.addBinaryOp('!ends', 10);
 
-angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout', 'dataFactory', 'VIEW_FORM_API_URL', '$location', 'AwsDocument','toastr',
+angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCounter', '$filter', '$rootScope', 'SendVisitorData', '$translate', '$timeout', 'dataFactory', 'VIEW_FORM_API_URL', '$location', 'AwsDocument', 'toastr',
 	function ($http, TimeCounter, $filter, $rootScope, SendVisitorData, $translate, $timeout, dataFactory, VIEW_FORM_API_URL, $location, AwsDocument, toastr) {
 		return {
 			templateUrl: 'form_modules/forms/base/views/directiveViews/form/submit-form.client.view.html',
@@ -19,8 +19,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				ispreview: '='
 			},
 			controller: function ($document, $window, $scope) {
-		       
-                $scope.ssn = '';
+
 				$scope.currentPageUrl = window.location.href;
 				if ($location.search().id) {
 					$rootScope.patientId = $location.search().id;
@@ -50,7 +49,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						patientKeys.forEach(function (key) {
 							console.log("keys : ", key);
 							console.log("Array.isArray(patient[key]) : ", Array.isArray(patient[key]));
-							if (Array.isArray(patient[key]) && patient[key].length !=0) {
+							if (Array.isArray(patient[key]) && patient[key].length != 0) {
 								switch (key) {
 									case 'EmailAddress':
 										$rootScope.patientInfo.EmailAddress = patient[key][0].Email;
@@ -74,22 +73,21 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 									case 'KeyValuePair':
 										console.log("KeyValuePair");
-										patient[key].forEach(function(element) {
-											console.log("element : ",element);
+										patient[key].forEach(function (element) {
+											console.log("element : ", element);
 											$rootScope.patientInfo[element.Key] = element.Value;
 
-                                            if(element.Key == 'Pain_Point'){
-                                            	if(element.Value){
-                                            	  $scope.setExistImagePoint(element.Value);	
-                                            	}                                            	
-                                            }
+											if (element.Key == 'Pain_Point') {
+												if (element.Value) {
+													$scope.setExistImagePoint(element.Value);
+												}
+											}
 
                                             if(element.Key == 'Social_Security'){
                                             	if(element.Value){
                                             		$rootScope.patientInfo[element.Key] = $scope.decryptSSN(element.Value);
                                             	}
                                             }
-
 
 
 										}, this);
@@ -147,98 +145,67 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					return Number(number.toFixed(2));
 				}
 
-                $rootScope.setSSNValue = $scope.setSSNValue = function(event){
-                	console.log(event.charCode);
-                	console.log(event.keyCode);
-                //	console.log($rootScope.patientInfo['SSN']);
-                   console.log($("#ssn").val());
-                   var ssnDetail = $("#ssn").val();
-                   console.log(ssnDetail.length);
-                  // $("#ssn").val("***-12-3453");
-                }
-
-                // $rootScope.setSSNEncrypted = $scope.setSSNEncrypted = function(){
-
-
-                //     // Encrypt 
-                //     var ciphertext = CryptoJS.AES.encrypt($scope.ssn, 'secret key 123');
-                    
-                //     console.log(ciphertext.toString());
-
-                //     // Decrypt 
-                //     var bytes  = CryptoJS.AES.decrypt(ciphertext.toString(), 'secret key 123');
-                //     var plaintext = bytes.toString(CryptoJS.enc.Utf8);
-                     
-                //     console.log(plaintext);
-
-                // };
-
-                // $scope.setSSNEncrypted();
-
-                $rootScope.decryptSSN = $scope.decryptSSN = function(encryptedSSN){
+				$rootScope.decryptSSN = $scope.decryptSSN = function (encryptedSSN) {
 
                     var bytes  = CryptoJS.AES.decrypt(encryptedSSN.toString(), $rootScope.patientId);
                     var plaintext = bytes.toString(CryptoJS.enc.Utf8);
                     console.log(plaintext);
                     $("#ssn").parent().find('input[type=hidden]').val(plaintext);
                     return 'XXX-XX-'+ plaintext.slice(-4);
-                    //$scope.ssn = plaintext;
 
-                    //angular.element('#ssn').val('****-***-'+plaintext.slice(-4));  
-
-                };
+				};
 
 
-				$scope.setExistImagePoint = (function(points){
-                     
-                   if($('#front_pointer_div').length > 0){
+				$scope.setExistImagePoint = (function (points) {
+
+					if ($('#front_pointer_div').length > 0) {
 
 
-					 var naturalWidth = $('#front_pointer_div').get(0).naturalWidth;
-					 var width = $("#front_pointer_div").width();					 
+						var naturalWidth = $('#front_pointer_div').get(0).naturalWidth;
+						var width = $("#front_pointer_div").width();
 
-					 var sideNaturalWidth = $('#side_pointer_div').get(0).naturalWidth;
-					 var sideWidth = $("#side_pointer_div").width();
+						var sideNaturalWidth = $('#side_pointer_div').get(0).naturalWidth;
+						var sideWidth = $("#side_pointer_div").width();
 
-				     var widthRatio = roundNumber(naturalWidth/width);
-                     var sideWidthRatio = roundNumber(sideNaturalWidth/sideWidth);
+						var widthRatio = roundNumber(naturalWidth / width);
+						var sideWidthRatio = roundNumber(sideNaturalWidth / sideWidth);
 
-                     var pointList = JSON.parse(points); 
+						var pointList = JSON.parse(points);
 
-                     for(var key in pointList){
+						for (var key in pointList) {
 
-                     	for(var index=0;index < pointList[key].length;index++){
-                            
-                            var currentWidthRatio = (key == 'front') ? widthRatio : sideWidthRatio;
+							for (var index = 0; index < pointList[key].length; index++) {
 
-                            var current_x_cordinate = roundNumber(pointList[key][index].pos_x/currentWidthRatio);
-                            var current_y_cordinate = roundNumber(pointList[key][index].pos_y/currentWidthRatio);
- 
-          					var pointer_image_width = 13
+								var currentWidthRatio = (key == 'front') ? widthRatio : sideWidthRatio;
 
-		  			        var style = "position: absolute; top: " + (current_y_cordinate - (pointer_image_width / 2)) + "px; left: " + (current_x_cordinate - (pointer_image_width / 2)) + "px;";
-        					var img = $('<img />', {
-        						id: 'pointer_' + (pointList[key].length - 1),
-        						src: '/static/modules/core/img/pointt.png',
-        						style: style,
-        						width: pointer_image_width
-        					});
+								var current_x_cordinate = roundNumber(pointList[key][index].pos_x / currentWidthRatio);
+								var current_y_cordinate = roundNumber(pointList[key][index].pos_y / currentWidthRatio);
 
-					        $("#" + key + "_pointer_div").after(img);
+								var pointer_image_width = 13
 
-        					var cordinateDetail = { real_cordinate: { pos_x: pointList[key][index].pos_x, pos_y: pointList[key][index].pos_y }, virtual_cordinate: { pos_x: current_x_cordinate, pos_y: current_x_cordinate } };
-        
-        					if (key == 'front') {
-        						$scope.cordinateList.front.push(cordinateDetail);
-        					}
-        					else {
-        						$scope.cordinateList.side.push(cordinateDetail);
-        					}
+								var style = "position: absolute; top: " + (current_y_cordinate - (pointer_image_width / 2)) + "px; left: " + (current_x_cordinate - (pointer_image_width / 2)) + "px;";
+								var img = $('<img />', {
+									id: 'pointer_' + (pointList[key].length - 1),
+									src: '/static/modules/core/img/pointt.png',
+									style: style,
+									width: pointer_image_width
+								});
 
-                     	}
-                     }          
+								$("#" + key + "_pointer_div").after(img);
 
-                   }
+								var cordinateDetail = { real_cordinate: { pos_x: pointList[key][index].pos_x, pos_y: pointList[key][index].pos_y }, virtual_cordinate: { pos_x: current_x_cordinate, pos_y: current_x_cordinate } };
+
+								if (key == 'front') {
+									$scope.cordinateList.front.push(cordinateDetail);
+								}
+								else {
+									$scope.cordinateList.side.push(cordinateDetail);
+								}
+
+							}
+						}
+
+					}
 
 				});
 
@@ -298,101 +265,6 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 				};
 
-				$rootScope.checkNumber = $scope.checkNumber = function (event) {
-
-					var keys = {
-						'up': 38, 'right': 39, 'down': 40, 'left': 37,
-						'escape': 27, 'backspace': 8, 'tab': 9, 'enter': 13,
-						'0': 48, '1': 49, '2': 50, '3': 51, '4': 52, '5': 53, '6': 54, '7': 55, '8': 56, '9': 57
-					};
-
-					var valid = true;
-
-					for (var index in keys) {
-
-						if (!keys.hasOwnProperty(index)) continue;
-
-						if (event.charCode == keys[index] || event.keyCode == keys[index]) {
-							valid = true;
-							break;
-						}
-						else {
-							valid = false;
-						}
-					}
-
-					$scope.validSSN = valid;
-
-					if (!valid) {
-						event.preventDefault();
-						return false;
-					}
-
-					var SSNValue = angular.element('#ssn').val();
-	
-					if(SSNValue.length > 10){
-						$scope.validSSN = false;
-					}
-
-				}
-
-				$rootScope.ssnKeyUp = $scope.ssnKeyUp = function (event) {
-			        console.log("print called");
-					if ($scope.validSSN) {
-                       
-						var SSNValue = angular.element('#ssn').val();
-			
-						SSNValue = SSNValue.replace(/ /g, '');
-
-                        var SSNLength = SSNValue.length;
-
-                        if( (SSNLength < 12) && (!(isNaN(event.key))) ){                        	 
-                               
-                             var ssnLengthDetail = SSNLength-1;
-
-                             if(SSNLength > 7){
-                             	ssnLengthDetail = SSNLength - 3;
-                             }
-                             else if(SSNLength > 4){
-                             	ssnLengthDetail = SSNLength -2;
-                             }
-
-                             $scope.ssn = $scope.ssn.substring(0, ssnLengthDetail);
-                             $scope.ssn += event.key;	
-
-                             console.log($scope.ssn);
-       						 var m = 1;
-       						 var arr = SSNValue.split('');
-       						 var SSNnewval = "";
-       
-       						 if (arr.length > 0) {
-       							for (var m = 0; m < arr.length; m++) {
-       								if (m == 3 || m == 6) {
-       									SSNnewval = SSNnewval + '-';
-       								}
-       
-       								if (m < 6) {
-       
-       									if (arr[m] != '-') {
-       										SSNnewval = SSNnewval + arr[m].replace(/[0-9]/g, "*");
-       									}
-       
-       								} else {
-       									if (arr[m] != '-') {
-       										SSNnewval = SSNnewval + arr[m];
-       									}
-       
-       								}
-       							}
-       						 }
-       
-       						 angular.element('#ssn').val(SSNnewval);                               
-                        }                        
-				
-					}
-
-				}	
-				
 				$scope.reloadForm = function () {
 					//Reset Form
 					$scope.myform.submitted = false;
@@ -532,8 +404,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					if (animateScroll) {
 						NOSCROLL = true;
 						setTimeout(function () {
-							$document.scrollToElement(angular.element('.activeField'), -10, 200).then(function () {
-								NOSCROLL = false;
+							$document.scrollToElement(angular.element('.activeField'), -10, 1000).then(function () {
+								// NOSCROLL = false;
 								setTimeout(function () {
 									if (document.querySelectorAll('.activeField .focusOn').length) {
 										//Handle default case
@@ -545,6 +417,9 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										//Handle case for dropdown input
 										document.querySelectorAll('.activeField .selectize-input')[0].focus();
 									}
+									setTimeout(function () {
+										NOSCROLL = false;
+									}, 1000);
 								});
 							});
 						});
@@ -646,6 +521,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				};
 
 				$rootScope.nextField = $scope.nextField = function (selectedField, value) {
+					$scope.myform.visible_form_fields.forEach(function (element, index) {
+						if (angular.equals(element, selectedField)) {
+							console.log("object match");
+							$scope.selected.index = index;
+						}
+					}, this);
 					if ($scope.selected && $scope.selected.index > -1) {
 						if ($scope.selected._id !== FORM_ACTION_ID) {
 							var currField = $scope.myform.visible_form_fields[$scope.selected.index];
@@ -792,7 +673,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							$rootScope.patientInfo = {}
 						}
 					}
-					console.log("patent info : ", $rootScope.patientInfo);
+					
 					form.signatureUrl = '';
 					var data = {};
 					data.HospitalMRN = $rootScope.patientId;
@@ -805,9 +686,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						$rootScope.patientInfo[ssnModelName] = encryptedSSN.toString(); 
 					});
 
-					console.log($rootScope.patientInfo);
-
-
+					
 					for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {
 							$rootScope.patientInfo[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model].option_value;
@@ -815,11 +694,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						} else if ($scope.myform.form_fields[i].fieldType == 'signature') {
 							form.signatureUrl = $rootScope.patientInfo[$scope.myform.form_fields[i].model];
 							form.signatureId = form.form_fields[i]._id;
-                            if(form.form_fields[i].uploadUrl){
-                                form.uploadUrl = form.form_fields[i].uploadUrl;
-                            }
+							if (form.form_fields[i].uploadUrl) {
+								form.uploadUrl = form.form_fields[i].uploadUrl;
+							}
 						}
-
 
 						if ($scope.myform.form_fields[i].fieldType != 'signature') {
 							if ($scope.myform.form_fields[i].parent) {
@@ -837,7 +715,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 									case 'PhoneNumber':
 									case 'Guarantor_Contact_phone':
-										if ($rootScope.patientData.Patient[$scope.myform.form_fields[i].parent] && $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent].length != 0) {
+										if ($rootScope.patientData && $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent] && $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent].length != 0) {
 											data[$scope.myform.form_fields[i].parent] = $rootScope.patientData.Patient[$scope.myform.form_fields[i].parent];
 										} else if (!data[$scope.myform.form_fields[i].parent]) {
 											data[$scope.myform.form_fields[i].parent] = [];
@@ -935,14 +813,15 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 							var awsFile = AwsDocument.getFile(form.signatureUrl);
 
-                            var fileUploadUrl = '';
-                            
-                            if(form.uploadUrl){
-                               fileUploadUrl = form.uploadUrl;                              
-                            } 
-                            else{
-                               fileUploadUrl = $rootScope.patentData.uploadphoto;
-                            }
+							var fileUploadUrl = '';
+
+							if (form.uploadUrl) {
+								fileUploadUrl = form.uploadUrl;
+							}
+							else {
+								console.log("$rootScope.patientData : ", $rootScope.patientData);
+								fileUploadUrl = $rootScope.patientData.uploadphoto;
+							}
 
 
 							AwsDocument.upload(awsFile, fileUploadUrl, function (result) {
@@ -964,7 +843,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 
 						} else {
-							updatePatientData(data, formAction);							
+							updatePatientData(data, formAction);
 						}
 
 
@@ -1002,20 +881,20 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 				}
 
-				var updatePatientData = function (data,formAction) {
+				var updatePatientData = function (data, formAction) {
 					console.log("data : ", data);
 
 					var url = VIEW_FORM_API_URL.apiEndpoint + VIEW_FORM_API_URL.urls.UpdatePatient;
 
 					dataFactory.put(data, url, function (data) {
 						console.log("data : ", data);
-						if (formAction) {  
-                           window.location.href = window.location.origin + "/" + formAction + "?id=" + $rootScope.patientId;
+						if (formAction) {
+							window.location.href = window.location.origin + "/" + formAction + "?id=" + $rootScope.patientId;
 						}
-						else{
+						else {
 							// window.location = $scope.currentPageUrl;
 						}
-						
+
 					}, function (reason) {
 						console.log("reason : ", reason);
 						toastr.error('Oops, something went wrong. Please try again later', 'Error');
