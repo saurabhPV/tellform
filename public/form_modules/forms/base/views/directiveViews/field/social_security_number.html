@@ -18,14 +18,16 @@
 			<small>{{field.description}}</small>
 		</p>
     </div>
+    <!-- ng-keyup="$root.ssnKeyUp($event)" ng-keypress="$root.checkNumber($event)" -->
     <div class="col-xs-12 field-input">
 		<input id="ssn" ng-style="{'color': 'white', 'border-color': 'white'}"
 			name="{{field.fieldType}}{{index}}"
-            type="{{input_type}}"
+            type="text"
 		   	ng-pattern="validateRegex"
 			placeholder="{{placeholder}}"
 			ng-class="{ 'no-border': !!$root.patientInfo[field.model] }"
-            class="focusOn text-field-input"
+            class="ssn ssnfocusOn text-field-input"
+            data-model-name="{{field.model}}"
             ng-focus="setActiveField(field._id, null, false)"
 			ng-model="$root.patientInfo[field.model]"
 			ng-model-options="{ debounce: 250 }"
@@ -34,7 +36,7 @@
 		   	on-tab-and-shift-key="prevField()"
 			ng-required="field.required"
 	        aria-describedby="inputError2Status" 
-	        ng-keyup="$root.ssnKeyUp($event)" ng-keypress="$root.checkNumber($event)" maxlength="11" />
+	     maxlength="11" mask-ssn/>
     </div>
     <div class="col-xs-12">
         <div ng-show="forms.myForm.{{field.fieldType}}{{index}}.$invalid && !!forms.myForm.{{field.fieldType}}{{index}}.$viewValue " class="alert alert-danger" role="alert">
@@ -67,3 +69,5 @@
 			</div>
 	</div>
 </div>
+
+

@@ -47,7 +47,10 @@
     "angular-toastr": "^2.1.1",
     "angular-animate": "^1.6.7",
     "crypto-js": "^3.1.9",
-    "angular-moment": "^1.2.0"
+    "angular-moment": "^1.2.0",
+    "jquery-mask-plugin": "^1.14.13",
+    "jquery.maskedinput": "^1.4.1",
+    "masking-ssn-field": "mask-ssn-field#*"    
   },
   "resolutions": {
     "angular-bootstrap": "^0.14.0",

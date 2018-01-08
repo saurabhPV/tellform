@@ -19,7 +19,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				ispreview: '='
 			},
 			controller: function ($document, $window, $scope) {
-				
+		       
                 $scope.ssn = '';
 				$scope.currentPageUrl = window.location.href;
 				if ($location.search().id) {
@@ -84,9 +84,9 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                                             	}                                            	
                                             }
 
-                                            if(element.key == 'social_security_number'){
+                                            if(element.Key == 'Social_Security'){
                                             	if(element.Value){
-                                            		$scope.decryptSSN(element.Value);
+                                            		$rootScope.patientInfo[element.Key] = $scope.decryptSSN(element.Value);
                                             	}
                                             }
 
@@ -147,7 +147,15 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					return Number(number.toFixed(2));
 				}
 
-
+                $rootScope.setSSNValue = $scope.setSSNValue = function(event){
+                	console.log(event.charCode);
+                	console.log(event.keyCode);
+                //	console.log($rootScope.patientInfo['SSN']);
+                   console.log($("#ssn").val());
+                   var ssnDetail = $("#ssn").val();
+                   console.log(ssnDetail.length);
+                  // $("#ssn").val("***-12-3453");
+                }
 
                 // $rootScope.setSSNEncrypted = $scope.setSSNEncrypted = function(){
 
@@ -169,12 +177,14 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
                 $rootScope.decryptSSN = $scope.decryptSSN = function(encryptedSSN){
 
-                    var bytes  = CryptoJS.AES.decrypt(encryptedSSN.toString(), '12345');
+                    var bytes  = CryptoJS.AES.decrypt(encryptedSSN.toString(), $rootScope.patientId);
                     var plaintext = bytes.toString(CryptoJS.enc.Utf8);
-                     
-                    $scope.ssn = plaintext;
+                    console.log(plaintext);
+                    $("#ssn").parent().find('input[type=hidden]').val(plaintext);
+                    return 'XXX-XX-'+ plaintext.slice(-4);
+                    //$scope.ssn = plaintext;
 
-                    angular.element('#ssn').val('****-***-'+plaintext.slice(-4));  
+                    //angular.element('#ssn').val('****-***-'+plaintext.slice(-4));  
 
                 };
 
@@ -327,7 +337,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				}
 
 				$rootScope.ssnKeyUp = $scope.ssnKeyUp = function (event) {
-			
+			        console.log("print called");
 					if ($scope.validSSN) {
                        
 						var SSNValue = angular.element('#ssn').val();
@@ -350,7 +360,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                              $scope.ssn = $scope.ssn.substring(0, ssnLengthDetail);
                              $scope.ssn += event.key;	
 
-
+                             console.log($scope.ssn);
        						 var m = 1;
        						 var arr = SSNValue.split('');
        						 var SSNnewval = "";
@@ -551,6 +561,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						}
 					}
 				});
+
 				function getAbsoluteBoundingRect(el) {
 					var doc = document,
 						win = window,
@@ -735,20 +746,6 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 
 				$rootScope.submitForm = $scope.submitForm = function () {
-     //                console.log($scope.ssn);
-     //                console.log($rootScope.patientId);
-     //              // console.log(CryptoJS.AES.encrypt($scope.ssn, $rootScope.patientId));
-     //                //console.log(CryptoJS.AES.encrypt($scope.ssn, 12345));
-
-     //                var ciphertext = CryptoJS.AES.encrypt($scope.ssn, '123456789');
-                    
-     //                console.log(ciphertext.toString());
-
-     //                return false;
-     //               // $rootScope.patientInfo[$scope.myform.form_fields[i].model] = CryptoJS.AES.encrypt($scope.ssn, $rootScope.patientId);  
-                   
-					// console.log($scope.forms);
-					// console.log($scope.myform);
 
 					if ($scope.forms.myForm.$invalid) {
 						$scope.goToInvalid();
@@ -800,6 +797,17 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					var data = {};
 					data.HospitalMRN = $rootScope.patientId;
 
+
+					$('.ssn').each(function(){
+						var ssnModelName = $(this).data('model-name');
+						var ssnModelValue = $(this).parent().find('input[type=hidden]').val();
+						var encryptedSSN = CryptoJS.AES.encrypt(ssnModelValue, $rootScope.patientId);
+						$rootScope.patientInfo[ssnModelName] = encryptedSSN.toString(); 
+					});
+
+					console.log($rootScope.patientInfo);
+
+
 					for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {
 							$rootScope.patientInfo[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model].option_value;
@@ -812,9 +820,6 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                             }
 						}
 
-						if($scope.myform.form_fields[i].fieldType == 'social_security_number'){
-                             $rootScope.patientInfo[$scope.myform.form_fields[i].model] = CryptoJS.AES.encrypt($scope.ssn, $rootScope.patientId); 
-						}
 
 						if ($scope.myform.form_fields[i].fieldType != 'signature') {
 							if ($scope.myform.form_fields[i].parent) {
@@ -827,7 +832,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										data[$scope.myform.form_fields[i].parent].push({
 											'Key': $scope.myform.form_fields[i].model,
 											'Value': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
-										})
+										});
 										break;
 
 									case 'PhoneNumber':
