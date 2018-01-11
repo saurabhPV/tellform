@@ -147,6 +147,7 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 
 				if(scope.field.fieldType == 'social_security_number'){
                      scope.input_type = 'text';
+                     scope.validateRegex = /^[A-Z]{3}-?[A-Z]{2}-?\d{4}$/;
 				}	
 
 

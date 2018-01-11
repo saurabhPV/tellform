@@ -28,7 +28,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					var url = VIEW_FORM_API_URL.apiEndpoint + VIEW_FORM_API_URL.urls.GetPatient.replace("{{patientId}}", $rootScope.patientId);
 
 					dataFactory.get(url, function (data) {
-						console.log("patent data : ", data);
+						//console.log("patent data : ", data);
 						// if (!$rootScope.patientInfo) {
 						// 	if (localStorage.getItem("patientInfo")) {
 						// 		$rootScope.patientInfo = JSON.parse(localStorage.getItem("patientInfo"));
@@ -44,11 +44,11 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 						var patientKeys = Object.keys(patient);
 
-						console.log("patientKeys : ", patientKeys)
+						//console.log("patientKeys : ", patientKeys)
 
 						patientKeys.forEach(function (key) {
-							console.log("keys : ", key);
-							console.log("Array.isArray(patient[key]) : ", Array.isArray(patient[key]));
+							// console.log("keys : ", key);
+							// console.log("Array.isArray(patient[key]) : ", Array.isArray(patient[key]));
 							if (Array.isArray(patient[key]) && patient[key].length != 0) {
 								switch (key) {
 									case 'EmailAddress':
@@ -58,7 +58,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 									case 'PhoneNumber':
 									case 'Guarantor_Contact_phone':
 										patient[key].forEach(function (element) {
-											console.log("element : ", element);
+											//console.log("element : ", element);
 											$rootScope.patientInfo[element.PHType] = element.PHNumber;
 										}, this);
 										break;
@@ -72,9 +72,9 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										break;
 
 									case 'KeyValuePair':
-										console.log("KeyValuePair");
+										//console.log("KeyValuePair");
 										patient[key].forEach(function (element) {
-											console.log("element : ", element);
+											//console.log("element : ", element);
 											$rootScope.patientInfo[element.Key] = element.Value;
 
 											if (element.Key == 'Pain_Point') {
@@ -83,12 +83,13 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 												}
 											}
 
-                                            if(element.Key == 'Social_Security'){
+											var ssnModelList = ['Patient_Social_Security_Number', 'Social_Security', 'Primary_Subscriber_Social_Security_Number', 'Secondary_Subscriber_Social_Security_Number', 'Guarantor_Social_Security'];
+
+                                            if(ssnModelList.indexOf(element.Key) >= 0 ){
                                             	if(element.Value){
                                             		$rootScope.patientInfo[element.Key] = $scope.decryptSSN(element.Value,element.Key);
                                             	}
                                             }
-
 
 										}, this);
 										break;
@@ -101,7 +102,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							}
 						});
 
-						console.log("$rootScope.patientInfo after getting data : ", $rootScope.patientInfo);
+						//console.log("$rootScope.patientInfo after getting data : ", $rootScope.patientInfo);
 						localStorage.setItem("patientInfo", JSON.stringify($rootScope.patientInfo));
 
 					}, function (reason) {
@@ -116,7 +117,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					})
 				}
 				var NOSCROLL = false;
-				var FORM_ACTION_ID = 'submit_field';
+				var STOPSCROLL = false; // variable to stop scrolling page
+ 				var FORM_ACTION_ID = 'submit_field';
 				$scope.forms = {};
 				$scope.cordinateList = { front: [], side: [] };
 				$scope.validSSN = false;
@@ -149,9 +151,14 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
                     var bytes  = CryptoJS.AES.decrypt(encryptedSSN.toString(), $rootScope.patientId);
                     var plaintext = bytes.toString(CryptoJS.enc.Utf8);
-                    console.log(plaintext);
-                    $("#"+keyId).parent().find('input[type=hidden]').val(plaintext);
-                    return 'XXX-XX-'+ plaintext.slice(-4);
+                    //console.log(plaintext);
+                    var protectedSSN = '';                    
+                    if(plaintext){
+                       $("#"+keyId).parent().find('input[type=hidden]').val(plaintext);
+                       protectedSSN = 'XXX-XX-'+ plaintext.slice(-4);
+                    }
+
+                    return protectedSSN;
 
 				};
 
@@ -388,6 +395,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					}
 
 					if ($scope.selected._id === field_id) {
+						STOPSCROLL = true;
 						return;
 					}
 
@@ -404,8 +412,9 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					if (animateScroll) {
 						NOSCROLL = true;
 						setTimeout(function () {
-							$document.scrollToElement(angular.element('.activeField'), -10, 1000).then(function () {
-								// NOSCROLL = false;
+							$document.scrollToElement (angular.element('.activeField'), -10, 1000).then(function () {
+							    NOSCROLL = false;
+							    STOPSCROLL = true;
 								setTimeout(function () {
 									if (document.querySelectorAll('.activeField .focusOn').length) {
 										//Handle default case
@@ -417,9 +426,9 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										//Handle case for dropdown input
 										document.querySelectorAll('.activeField .selectize-input')[0].focus();
 									}
-									setTimeout(function () {
-										NOSCROLL = false;
-									}, 1000);
+									// setTimeout(function () {
+									// 	NOSCROLL = false;
+									// }, 1000);
 								});
 							});
 						});
@@ -474,7 +483,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				}
 				//Fire event when window is scrolled
 				$window.onscroll = function () {
-					if (!NOSCROLL) {
+					if (!NOSCROLL && !STOPSCROLL) {
 
 						var scrollTop = $(window).scrollTop();
 						var abselemBox = getAbsoluteBoundingRect(document.getElementsByClassName('activeField')[0]);
@@ -515,6 +524,9 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							field_index = $scope.selected.index - 1;
 							$scope.setActiveField(null, field_index, false);
 						}
+					}
+					else{
+						STOPSCROLL = false;
 					}
 
 					$scope.$apply();

@@ -20,7 +20,9 @@
     </div>
     <!-- ng-keyup="$root.ssnKeyUp($event)" ng-keypress="$root.checkNumber($event)" -->
     <div class="col-xs-12 field-input">
-		<input id="{{field.model}}" ng-style="{'color': 'white', 'border-color': 'white'}"
+        <input id="{{field.model}}" ng-style="{'color': 'white', 'border-color': 'white'}" type="text" ng-pattern="validateRegex" name="{{field.fieldType}}{{index}}" ng-model="$root.patientInfo[field.model]" mask-ssn="" class="ssn ng-valid ng-dirty ng-touched ng-empty focusOn text-field-input" data-model-name="{{field.model}}" ng-focus="setActiveField(field._id, null, false)" ng-model-options="{ debounce: 250 }" value="$root.patientInfo[field.model]" on-enter-or-tab-key="nextField(field)"	on-tab-and-shift-key="prevField()" ng-required="field.required" aria-describedby="inputError2Status">
+
+<!-- 		<input id="{{field.model}}" ng-style="{'color': 'white', 'border-color': 'white'}"
 			name="{{field.fieldType}}{{index}}"
             type="text"
 		   	ng-pattern="validateRegex"
@@ -36,7 +38,7 @@
 		   	on-tab-and-shift-key="prevField()"
 			ng-required="field.required"
 	        aria-describedby="inputError2Status" 
-	     maxlength="11" mask-ssn/>
+	     maxlength="11" mask-ssn/> -->
     </div>
     <div class="col-xs-12">
         <div ng-show="forms.myForm.{{field.fieldType}}{{index}}.$invalid && !!forms.myForm.{{field.fieldType}}{{index}}.$viewValue " class="alert alert-danger" role="alert">
