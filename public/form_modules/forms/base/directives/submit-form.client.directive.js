@@ -78,12 +78,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 											//console.log("element : ", element);
 											$rootScope.patientInfo[element.Key] = element.Value;
 
-											if (element.Key == 'Pain_Point') {
-												if (element.Value) {
-													$scope.setExistImagePoint(element.Value);
-												}
-											}										
-                                            else if(ssnModelList.indexOf(element.Key) >= 0 ){
+                                            if(ssnModelList.indexOf(element.Key) >= 0 ){
                                             	if(element.Value){
                                             		$rootScope.patientInfo[element.Key] = $scope.decryptSSN(element.Value,element.Key);
                                             	}
@@ -119,8 +114,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 				var STOPSCROLL = false; // variable to stop scrolling page
  				var FORM_ACTION_ID = 'submit_field';
 				$scope.forms = {};
-				$scope.cordinateList = { front: [], side: [] };
-				$scope.validSSN = false;
+
 				//Don't start timer if we are looking at a design preview
 				if ($scope.ispreview) {
 					TimeCounter.restartClock();
@@ -137,15 +131,6 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					answers_not_completed: form_fields_count - nb_valid
 				};
 
-				// function calculateAspectRatio(element) {
-				//     var $element = $(element);
-				//     return $element.width() / $element.height();
-				// }
-
-				function roundNumber(number) {
-					return Number(number.toFixed(2));
-				}
-
 				$rootScope.decryptSSN = $scope.decryptSSN = function (encryptedSSN,keyId) {
 
                     var bytes  = CryptoJS.AES.decrypt(encryptedSSN.toString(), $rootScope.patientId);
@@ -158,126 +143,6 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
                     }
 
                     return protectedSSN;
-
-				};
-
-				// $scope.convertUTCDateToLocalDate = function (date) {
-    //                 var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
-
-    //                 var offset = date.getTimezoneOffset() / 60;
-    //                 var hours = date.getHours();
-
-    //                 newDate.setHours(hours - offset);
-    //                 //return newDate;   
-    //             }
-
-    //             $scope.convertUTCDateToLocalDate();
-				$scope.setExistImagePoint = (function (points) {
-
-					if ($('#front_pointer_div').length > 0) {
-
-
-						var naturalWidth = $('#front_pointer_div').get(0).naturalWidth;
-						var width = $("#front_pointer_div").width();
-
-						var sideNaturalWidth = $('#side_pointer_div').get(0).naturalWidth;
-						var sideWidth = $("#side_pointer_div").width();
-
-						var widthRatio = roundNumber(naturalWidth / width);
-						var sideWidthRatio = roundNumber(sideNaturalWidth / sideWidth);
-
-						var pointList = JSON.parse(points);
-
-						for (var key in pointList) {
-
-							for (var index = 0; index < pointList[key].length; index++) {
-
-								var currentWidthRatio = (key == 'front') ? widthRatio : sideWidthRatio;
-
-								var current_x_cordinate = roundNumber(pointList[key][index].pos_x / currentWidthRatio);
-								var current_y_cordinate = roundNumber(pointList[key][index].pos_y / currentWidthRatio);
-
-								var pointer_image_width = 13
-
-								var style = "position: absolute; top: " + (current_y_cordinate - (pointer_image_width / 2)) + "px; left: " + (current_x_cordinate - (pointer_image_width / 2)) + "px;";
-								var img = $('<img />', {
-									id: 'pointer_' + (pointList[key].length - 1),
-									src: '/static/modules/core/img/pointt.png',
-									style: style,
-									width: pointer_image_width
-								});
-
-								$("#" + key + "_pointer_div").after(img);
-
-								var cordinateDetail = { real_cordinate: { pos_x: pointList[key][index].pos_x, pos_y: pointList[key][index].pos_y }, virtual_cordinate: { pos_x: current_x_cordinate, pos_y: current_x_cordinate } };
-
-								if (key == 'front') {
-									$scope.cordinateList.front.push(cordinateDetail);
-								}
-								else {
-									$scope.cordinateList.side.push(cordinateDetail);
-								}
-
-							}
-						}
-
-					}
-
-				});
-
-				$rootScope.setImagePoint = $scope.setImagePoint = function (event) {
-
-					var elementId = event.target.id;
-
-					var width = $("#" + elementId).width();
-					var height = $("#" + elementId).height();
-					var naturalWidth = $("#" + elementId).get(0).naturalWidth;
-					var naturalHeight = $("#" + elementId).get(0).naturalHeight;
-
-					var widthRatio = roundNumber(naturalWidth / width);
-
-					var offset = $("#" + elementId).offset();
-
-					var pos_x = event.offsetX ? (event.offsetX) : event.pageX - offset.left;
-					var pos_y = event.offsetY ? (event.offsetY) : event.pageY - offset.top;
-
-					var real_pos_x = roundNumber(pos_x * widthRatio);
-					var real_pos_y = roundNumber(pos_y * widthRatio);
-
-					var cordinateDetail = { real_cordinate: { pos_x: real_pos_x, pos_y: real_pos_y }, virtual_cordinate: { pos_x: pos_x, pos_y: pos_y } };
-
-					if (elementId == 'front_pointer_div') {
-						$scope.cordinateList.front.push(cordinateDetail);
-					}
-					else {
-						$scope.cordinateList.side.push(cordinateDetail);
-					}
-
-					var pointer_image_width = 13
-
-					var style = "position: absolute; top: " + (pos_y - (pointer_image_width / 2)) + "px; left: " + (pos_x - (pointer_image_width / 2)) + "px;";
-					var img = $('<img />', {
-						id: 'pointer_' + ($scope.cordinateList.front.length - 1),
-						src: '/static/modules/core/img/pointt.png',
-						style: style,
-						width: pointer_image_width
-					});
-
-					$("#" + elementId).after(img);
-
-
-					var cordinateListContent = { front: [], side: [] };
-
-					for (var key in $scope.cordinateList) {
-
-						for (var index = 0; index < $scope.cordinateList[key].length; index++) {
-							cordinateListContent[key].push($scope.cordinateList[key][index].real_cordinate);
-						}
-
-					}
-
-					$("#pain_point").val(JSON.stringify(cordinateListContent));
-					$("#pain_point").trigger('change');
 
 				};
 
