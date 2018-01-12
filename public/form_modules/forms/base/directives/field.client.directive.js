@@ -99,12 +99,26 @@ angular.module('view-form').directive('fieldDirective', ['$http', '$compile', '$
 				//Set format only if field is a date
 				if(scope.field.fieldType === 'date'){
 					if (scope.field.chooseDefaultDate){
-						$rootScope.patientInfo[scope.field.model] = new Date();
+
+                         var today = new Date();
+                         var dd = today.getDate();
+                         var mm = today.getMonth()+1; //January is 0!
+                         var yy = today.getFullYear();
+                         
+                         if(dd<10) {
+                             dd = '0'+dd
+                         } 
+                         
+                         if(mm<10) {
+                             mm = '0'+mm
+                         }                          
+
+						 $rootScope.patientInfo[scope.field.model] = yy + '-' + mm + '-' + dd;
 					}
 					scope.dateOptions = {
 						changeYear: true,
 						changeMonth: true,
-						altFormat: 'mm/dd/yyyy',
+						dateFormat: 'yy-mm-dd',
 						yearRange: '1900:-0',
 						defaultDate: 0,
 						maxDate: new Date()

@@ -45,6 +45,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 						var patientKeys = Object.keys(patient);
 
 						//console.log("patientKeys : ", patientKeys)
+                        var ssnModelList = ['Patient_Social_Security_Number', 'Social_Security', 'Primary_Subscriber_Social_Security_Number', 'Secondary_Subscriber_Social_Security_Number', 'Guarantor_Social_Security'];
 
 						patientKeys.forEach(function (key) {
 							// console.log("keys : ", key);
@@ -81,15 +82,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 												if (element.Value) {
 													$scope.setExistImagePoint(element.Value);
 												}
-											}
-
-											var ssnModelList = ['Patient_Social_Security_Number', 'Social_Security', 'Primary_Subscriber_Social_Security_Number', 'Secondary_Subscriber_Social_Security_Number', 'Guarantor_Social_Security'];
-
-                                            if(ssnModelList.indexOf(element.Key) >= 0 ){
+											}										
+                                            else if(ssnModelList.indexOf(element.Key) >= 0 ){
                                             	if(element.Value){
                                             		$rootScope.patientInfo[element.Key] = $scope.decryptSSN(element.Value,element.Key);
                                             	}
-                                            }
+                                            }                                            
 
 										}, this);
 										break;
@@ -98,11 +96,12 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										break;
 								}
 							} else {
+								
 								$rootScope.patientInfo[key] = patient[key];
 							}
 						});
 
-						//console.log("$rootScope.patientInfo after getting data : ", $rootScope.patientInfo);
+						console.log("$rootScope.patientInfo after getting data : ", $rootScope.patientInfo);
 						localStorage.setItem("patientInfo", JSON.stringify($rootScope.patientInfo));
 
 					}, function (reason) {
@@ -162,7 +161,17 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 				};
 
+				// $scope.convertUTCDateToLocalDate = function (date) {
+    //                 var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
 
+    //                 var offset = date.getTimezoneOffset() / 60;
+    //                 var hours = date.getHours();
+
+    //                 newDate.setHours(hours - offset);
+    //                 //return newDate;   
+    //             }
+
+    //             $scope.convertUTCDateToLocalDate();
 				$scope.setExistImagePoint = (function (points) {
 
 					if ($('#front_pointer_div').length > 0) {
@@ -525,9 +534,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							$scope.setActiveField(null, field_index, false);
 						}
 					}
-					else{
-						STOPSCROLL = false;
-					}
+
+                    if(STOPSCROLL){
+                    	STOPSCROLL = false;
+                    }
 
 					$scope.$apply();
 				};
@@ -690,14 +700,14 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					var data = {};
 					data.HospitalMRN = $rootScope.patientId;
 
-
+ 
+                    var ssnList = [];
 					$('.ssn').each(function(){
 						var ssnModelName = $(this).data('model-name');
 						var ssnModelValue = $(this).parent().find('input[type=hidden]').val();
 						var encryptedSSN = CryptoJS.AES.encrypt(ssnModelValue, $rootScope.patientId);
-						$rootScope.patientInfo[ssnModelName] = encryptedSSN.toString(); 
-					});
-
+						ssnList[ssnModelName] = encryptedSSN.toString();
+					});                
 					
 					for (var i = 0; i < $scope.myform.form_fields.length; i++) {
 						if ($scope.myform.form_fields[i].fieldType === 'dropdown' && !$scope.myform.form_fields[i].deletePreserved) {
@@ -721,7 +731,7 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 										}
 										data[$scope.myform.form_fields[i].parent].push({
 											'Key': $scope.myform.form_fields[i].model,
-											'Value': $rootScope.patientInfo[$scope.myform.form_fields[i].model]
+											'Value': ( ($scope.myform.form_fields[i].fieldType != 'social_security_number') ? $rootScope.patientInfo[$scope.myform.form_fields[i].model] : ssnList[$scope.myform.form_fields[i].model])
 										});
 										break;
 
@@ -817,10 +827,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					localStorage.setItem("patientInfo", JSON.stringify($rootScope.patientInfo));
 
 					setTimeout(function () {
-						if (formAction) {
-							window.location = formAction;
-							window.scrollTo(0, 0);
-						}
+						// if (formAction) {
+						// 	window.location = formAction;
+						// 	window.scrollTo(0, 0);
+						// }
 						if (form.signatureUrl) {
 
 							var awsFile = AwsDocument.getFile(form.signatureUrl);
@@ -862,36 +872,35 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					}, 500);
 				};
 
-				var saveFormDetail = function (form, formAction, _timeElapsed) {
+				// var saveFormDetail = function (form, formAction, _timeElapsed) {
 
-					$scope.submitPromise = $http.post('/forms/' + $scope.myform._id, form)
-						.success(function (data, status) {
-							$scope.myform.submitted = true;
-							$scope.loading = false;
-							SendVisitorData.send(form, getActiveField(), _timeElapsed);
-							if (formAction) {
-								window.location.href = "http://" + window.location.hostname + "/" + formAction;
-							}
-						})
-						.error(function (error) {
-							$scope.loading = false;
-							console.error(error);
-							$scope.error = error.message;
-							if (formAction) {
-								window.location = "http://" + window.location.hostname + ":8887/" + formAction;
-								setTimeout(function () {
-									console.log("time to reload");
-									//$scope.reloadForm();									 
-									//$location.path(formAction);
-									//$scope.fadeIn();
-									//window.location.reload();
-									$window.animate(window.scrollTo(0, 0));
-								}, 100);
-							}
-						});
+				// 	$scope.submitPromise = $http.post('/forms/' + $scope.myform._id, form)
+				// 		.success(function (data, status) {
+				// 			$scope.myform.submitted = true;
+				// 			$scope.loading = false;
+				// 			SendVisitorData.send(form, getActiveField(), _timeElapsed);
+				// 			if (formAction) {
+				// 				window.location.href = "http://" + window.location.hostname + "/" + formAction;
+				// 			}
+				// 		})
+				// 		.error(function (error) {
+				// 			$scope.loading = false;
+				// 			console.error(error);
+				// 			$scope.error = error.message;
+				// 			if (formAction) {
+				// 				window.location = "http://" + window.location.hostname + ":8887/" + formAction;
+				// 				setTimeout(function () {
+				// 					console.log("time to reload");
+				// 					//$scope.reloadForm();									 
+				// 					//$location.path(formAction);
+				// 					//$scope.fadeIn();
+				// 					//window.location.reload();
+				// 					$window.animate(window.scrollTo(0, 0));
+				// 				}, 100);
+				// 			}
+				// 		});
 
-
-				}
+				// }
 
 				var updatePatientData = function (data, formAction) {
 					console.log("data : ", data);
@@ -901,9 +910,10 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 					dataFactory.put(data, url, function (data) {
 						console.log("data : ", data);
 						if (formAction) {
-							window.location.href = window.location.origin + "/" + formAction + "?id=" + $rootScope.patientId;
+							window.location.href = window.location.origin + "/" + formAction + "?id=" + $rootScope.patientId;						
 						}
 						else {
+							return false;
 							// window.location = $scope.currentPageUrl;
 						}
 

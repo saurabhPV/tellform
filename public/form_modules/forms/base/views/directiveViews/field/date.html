@@ -15,7 +15,8 @@
     </div>
     <div class="col-xs-12 field-input ageField">
         <div class="control-group input-append">
-            <input class="focusOn"
+            <input type="text" class="focusOn"
+                   data-model-name={{field.model}}
             	   ng-focus="setActiveField(field._id, null, false)"
 				   ng-style="{'color': design.colors.answerColor}"
 				   ng-class="{ 'no-border': !!$root.patientInfo[field.model] }"
@@ -23,11 +24,11 @@
 				   ng-model="$root.patientInfo[field.model]"
 				   ng-model-options="{ debounce: 250 }"
 				   ng-required="field.required"
-				   placeholder="MM/DD/YYYY"
+				   placeholder="YYYY-MM-DD"
 				   on-tab-key="nextField(field)"
 				   on-tab-and-shift-key="prevField()"
 				   readonly='true'
-				   ng-change="nextField(field)">
+				   ng-change="nextField(field)"  as-date>
         </div>
     </div>
 </div>
