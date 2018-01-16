@@ -22,7 +22,7 @@
       <div ng-controller="pain-point-controller" style="height:400px;" class="pain-point-container">
 
 <div style="overflow: auto;">
-<input type="hidden" class="pain-point-input" id="pain_point" name="{{field.fieldType}}{{index}}" ng-model="$root.patientInfo[field.model]" ng-change="setActiveField(field._id, null, false)" value="{{$root.patientInfo[field.model]}}" ng-required="field.required">
+<input type="hidden" class="focusOn pain-point-input" id="pain_point" name="{{field.fieldType}}{{index}}" ng-model="$root.patientInfo[field.model]" ng-change="setActiveField(field._id, null, false)" value="{{$root.patientInfo[field.model]}}" ng-required="field.required">
 
 <div  style="position: relative;float:left;">
 <img ng-click="setPoint($event)" data-model-name="{{field.model}}" clearPoint="clearPoint" name="front_pointer" data-type="front" id="front_pointer_div" src="/static/modules/core/img/Human_front.png" style="width: 150px;" pain-point>
@@ -35,9 +35,9 @@
 </div>
 
 <div style="margin-left:20px;">
-<button class="btn btn-primary clear-point" ng-hide="$root.patientInfo[field.model] == ''" style="margin-top:20px;" ng-click="clearPoint($event)" data-model-name="{{field.model}}">Clear</button>
+<button class="btn btn-primary clear-point" ng-hide="$root.patientInfo[field.model] == ''" style="margin-top:20px;background-color: rgb(255, 255, 255);color: rgb(63, 162, 247);" ng-click="clearPoint($event)" data-model-name="{{field.model}}">Clear</button>
 </div>
-
+    
     </div>
     </div>
     <div class="col-xs-12">

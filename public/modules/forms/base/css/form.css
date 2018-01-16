@@ -457,7 +457,7 @@ h3.forms-list-title {
         height: 186px !important;
         max-height: 186px !important;
     }
-    .signature_btn{
+    .signature_btn, .btn-edit, .btn-cancel{
         background-color: white;
         color: #3fa2f7;
     }

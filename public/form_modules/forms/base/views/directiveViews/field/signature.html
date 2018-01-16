@@ -1,5 +1,4 @@
-<div class="field row"
-	 ng-click="setActiveField(field._id, index, true)">
+<div class="field row" ng-click="setActiveField(field._id, index, true)" ng-controller="SignatureController">
 	<div class="col-xs-12 field-title row-fluid" ng-style="{'color': design.colors.questionColor}">
     	<h3 class="col-xs-12">
     		<small class="field-number">
@@ -15,15 +14,33 @@
     	</h3>
 
 		<p class="col-xs-12">
-			<small>{{field.description}}</small>
+			<small ng-if="!checkImageExist($root.patientInfo[field.model])">{{field.description}}</small>
 		</p>
     </div>
     <div class="col-xs-12 field-input">
-<input type="hidden" class="signature-pad" name="{{field.fieldType}}{{index}}" ng-model="$root.patientInfo[field.model]" ng-focus="setActiveField(field._id, null, false)" ng-value="{{$root.patientInfo[field.model]}}" id="sign" ng-required="field.required">
 
-<signature-pad id="signature-pad" accept="accept" clear="clear" style="border:1px solid black;" height="220" width="400" disabled="false" dataurl="$root.patientInfo[field.model]"></signature-pad>
+        <div ng-if="!checkImageExist($root.patientInfo[field.model])">
+            <input type="hidden" name="{{field.model}}-oldSignatureExist" id="{{field.model}}-oldSignatureExist" value="false">
+            <input type="hidden" class="focusOn signature-pad" name="{{field.fieldType}}{{index}}" ng-model="$root.patientInfo[field.model]" ng-focus="setActiveField(field._id, null, false)" ng-value="{{$root.patientInfo[field.model]}}" id="sign" ng-required="field.required">
 
-<button class="signature_btn btn btn-primary" ng-hide="$root.patientInfo[field.model] == ''" style="margin-top:20px;" ng-click="clear()">Clear</button>
+            <signature-pad id="signature-pad" accept="accept" clear="clear" style="border:1px solid black;" height="220" width="400" disabled="false" dataurl="$root.patientInfo[field.model]"></signature-pad>
+
+            <button class="signature_btn btn btn-primary" ng-hide="$root.patientInfo[field.model] == ''" style="margin-top:20px;" ng-click="clear()">Clear</button>
+
+            <span ng-if="signatureExistUrl != ''">
+               <button class="btn btn-primary btn-cancel" style="margin-top:20px;" ng-click="cancel(field.model)">Cancel</button>
+            </span>
+
+
+        </div>
+
+        <div ng-if="checkImageExist($root.patientInfo[field.model])">
+           <div>
+             <input type="hidden" name="{{field.model}}-oldSignatureExist" id="{{field.model}}-oldSignatureExist" value="true">
+             <img src="{{$root.patientInfo[field.model]}}" width="335" height="186">
+           </div> 
+            <button class="btn btn-primary btn-edit" style="margin-top:20px;" ng-click="editImage(field.model)">Edit</button>
+        </div>
 
     </div>
     <div class="col-xs-12">

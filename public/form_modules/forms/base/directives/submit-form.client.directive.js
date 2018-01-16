@@ -460,7 +460,8 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 
 				$rootScope.goToInvalid = $scope.goToInvalid = function () {
 					var field_id = $('.row.field-directive .ng-invalid.focusOn, .row.field-directive .ng-untouched.focusOn:not(.ng-valid)').first().parents('.row.field-directive').first().attr('data-id');
-					$scope.setActiveField(field_id, null, true);
+                     console.log(field_id);
+ 					$scope.setActiveField(field_id, null, true);
 				};
 
                 /*
@@ -579,11 +580,21 @@ angular.module('view-form').directive('submitFormDirective', ['$http', 'TimeCoun
 							$rootScope.patientInfo[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model].option_value;
 							data[$scope.myform.form_fields[i].model] = $rootScope.patientInfo[$scope.myform.form_fields[i].model]
 						} else if ($scope.myform.form_fields[i].fieldType == 'signature') {
-							form.signatureUrl = $rootScope.patientInfo[$scope.myform.form_fields[i].model];
-							form.signatureId = form.form_fields[i]._id;
-							if (form.form_fields[i].uploadUrl) {
-								form.uploadUrl = form.form_fields[i].uploadUrl;
-							}
+
+                            var signatureModel = $scope.myform.form_fields[i].model;
+                            var signatureId = signatureModel+"-oldSignatureExist";
+                            var isSignatureExist = angular.element("#"+signatureId).val();                           
+                            console.log(isSignatureExist);
+                            if(!isSignatureExist){
+
+    							form.signatureUrl = $rootScope.patientInfo[$scope.myform.form_fields[i].model];
+    							form.signatureId = form.form_fields[i]._id;
+    							if (form.form_fields[i].uploadUrl) {
+    								form.uploadUrl = form.form_fields[i].uploadUrl;
+    							}
+
+                            }
+
 						}
 
 						if ($scope.myform.form_fields[i].fieldType != 'signature') {
